@@ -35,7 +35,7 @@ class CreatePasswordResetsTable extends Migration
         if (Schema::hasTable('password_resets')) {
 
             Schema::table('password_resets', function (Blueprint $table) {
-                $table->dropForeign('users_user_id_foreign');
+                $table->dropForeign('password_resets_user_id_foreign');
                 $table->drop();
             });
         }

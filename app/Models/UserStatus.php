@@ -16,4 +16,18 @@ class UserStatus extends Model
 
         return [$active, $blocked];
     }
+
+    public static function make(int $title, string $changed_by): UserStatus
+    {
+        return UserStatus::create([
+            'title' => $title,
+            'changed_by' => $changed_by
+        ]);
+    }
+
+    public $timestamps = false;
+
+    protected $fillable = [
+        'title', 'changed_at', 'changed_by'
+    ];
 }
