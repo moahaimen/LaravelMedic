@@ -2,19 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Response;
 use App\Models\Permission;
 use Illuminate\Http\Request;
 
 class PermissionController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Fetch a list of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function get()
     {
-        //
+        $permissions = Permission::all();
+
+        return Response::Ok($permissions, 'Permissions list fetched successfully');
     }
 
     /**
@@ -23,20 +26,19 @@ class PermissionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function create(Request $request)
     {
-        //
-    }
+        $data = $request->validate([
+            'name' => 'required|string|min:3|unique:categories,name',
+            'description' => 'required|string|min:3',
+        ]);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Permission  $permission
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Permission $permission)
-    {
-        //
+        $permission = Permission::create($data);
+
+        if ($permission == null) {
+            Response::Error('Failed to create new permission');
+        }
+        return Response::Ok($permission, 'Permission resource created successfully');
     }
 
     /**
@@ -48,7 +50,16 @@ class PermissionController extends Controller
      */
     public function update(Request $request, Permission $permission)
     {
-        //
+        $data = $request->validate([
+            'name' => 'nullable|string|min:3|unique:categories,name',
+            'description' => 'nullable|string|min:3',
+        ]);
+
+        if (!$permission->update($data)) {
+
+            return Response::Error('Failed to update permission ' . $permission['id']);
+        }
+        return Response::Ok($permission, 'Permission resource updated successfully');
     }
 
     /**
@@ -57,8 +68,11 @@ class PermissionController extends Controller
      * @param  \App\Models\Permission  $permission
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Permission $permission)
+    public function delete(Permission $permission)
     {
-        //
+        if (!$permission->delete()) {
+            return Response::Error('Failed to delete permission ' . $permission['id']);
+        }
+        return Response::Ok($permission, 'Permission ' . $permission['id'] . ' removed successfully');
     }
 }

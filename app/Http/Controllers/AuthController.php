@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Response;
-use App\User;
+use App\Models\User;
 use App\Models\UserStatus;
 use AuthException;
 use Illuminate\Http\Request;

@@ -28,13 +28,13 @@ class BrandController extends Controller
      */
     public function create(Request $request)
     {
-        $request->validate([
-            'name' => 'required|min:3|unique',
-            // 'description' => '', 
-            'attachment_id' => 'required|exists:attachments'
+        $data = $request->validate([
+            'name' => 'required|min:3|unique:brands,name',
+            'description' => 'required|min:3',
+            'attachment_id' => 'required|exists:attachments,id'
         ]);
 
-        $brand = Brand::create($request->all());
+        $brand = Brand::create($data);
 
         if ($brand == null) {
             Response::Error('Failed to create new brand');
@@ -51,15 +51,15 @@ class BrandController extends Controller
      */
     public function update(Request $request, Brand $brand)
     {
-        $request->validate([
-            'name' => 'nullable|min:3|unique,',
-            'attachment_id' => 'nullable|exists:attachments'
+        $data = $request->validate([
+            'name' => 'nullable|min:3|unique:brands,name',
+            'description' => 'nullable|min:3',
+            'attachment_id' => 'nullable|exists:attachments,id'
         ]);
 
-        $brand->update($request->all());
+        if (!$brand->update($data)) {
 
-        if ($brand == null) {
-            Response::Error('Failed to update brand ' + $brand['id']);
+            return Response::Error('Failed to update brand ' . $brand['id']);
         }
         return Response::Ok($brand, 'Brand resource updated successfully');
     }
@@ -73,8 +73,8 @@ class BrandController extends Controller
     public function delete(Brand $brand)
     {
         if (!$brand->delete()) {
-            return Response::Error('Failed to delete brand ' + $brand['id']);
+            return Response::Error('Failed to delete brand ' . $brand['id']);
         }
-        return Response::Ok($brand, 'Brand ' + $brand['id'] + ' removed successfully');
+        return Response::Ok($brand, 'Brand ' . $brand['id'] . ' removed successfully');
     }
 }

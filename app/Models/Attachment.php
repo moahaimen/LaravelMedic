@@ -16,4 +16,27 @@ class Attachment extends Model
 
         return [$image, $video];
     }
+
+    public static function typeFromMimeType(string $mimeType)
+    {
+        $type = explode('/', $mimeType)[0];
+
+        switch($type)
+        {
+            case 'image':
+                return Attachment::image;
+            case 'video':
+                return Attachment::video;
+            default:
+                throw "Unsupported mimeType";
+        }
+    }
+
+    protected $fillable = [
+        'type', 'url', 'path', 'code'
+    ];
+
+    protected $hidden = [
+        'path'
+    ];
 }

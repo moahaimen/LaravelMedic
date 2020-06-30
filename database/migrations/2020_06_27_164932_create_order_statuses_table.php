@@ -17,14 +17,11 @@ class CreateOrderStatusesTable extends Migration
     {
         Schema::create('order_statuses', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
-
             $table->enum('title', OrderStatus::values())->nullable(false)->default(OrderStatus::pending);
 
             $table->timestamp('changed_at')->nullable(false)->default(DB::raw('current_timestamp'));
             $table->foreignId('changed_by')->nullable(false)->constrained('users', 'id');
             $table->foreignId('previous_id')->nullable(true)->constrained('order_statuses');
-
         });
     }
 

@@ -19,7 +19,7 @@ class CreateBrandsTable extends Migration
 
             $table->string('name')->nullable(false);
             $table->string('description');
-            $table->foreignId('attachment_id')->nullable(true)->constrained('attachments');
+            $table->foreignId('attachment_id')->nullable(false)->constrained('attachments');
         });
     }
 

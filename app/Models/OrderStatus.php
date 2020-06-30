@@ -17,4 +17,24 @@ class OrderStatus extends Model
     {
         return [0, 1, 2, 3, 4, 5];
     }
+
+
+    public static function make(int $title, string $changed_by, OrderStatus $current = null): OrderStatus
+    {
+        $data = [
+            'title' => $title,
+            'changed_by' => $changed_by
+        ];
+        if ($current != null) {
+            $data['previous_id'] = $current['id'];
+        }
+
+        return OrderStatus::create($data);
+    }
+
+    public $timestamps = false;
+
+    protected $fillable = [
+        'title', 'changed_at', 'changed_by', 'previous_id'
+    ];
 }

@@ -2,19 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Response;
 use App\Models\Role;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Fetch a list of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function get()
     {
-        //
+        $roles = Role::all();
+
+        return Response::Ok($roles, 'Roles list fetched successfully');
     }
 
     /**
@@ -23,20 +26,19 @@ class RoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function create(Request $request)
     {
-        //
-    }
+        $data = $request->validate([
+            'name' => 'required|string|min:3|unique:categories,name',
+            'description' => 'required|string|min:3',
+        ]);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Role  $role
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Role $role)
-    {
-        //
+        $role = Role::create($data);
+
+        if ($role == null) {
+            Response::Error('Failed to create new role');
+        }
+        return Response::Ok($role, 'Role resource created successfully');
     }
 
     /**
@@ -48,7 +50,16 @@ class RoleController extends Controller
      */
     public function update(Request $request, Role $role)
     {
-        //
+        $data = $request->validate([
+            'name' => 'nullable|string|min:3|unique:categories,name',
+            'description' => 'nullable|string|min:3',
+        ]);
+
+        if (!$role->update($data)) {
+
+            return Response::Error('Failed to update role ' . $role['id']);
+        }
+        return Response::Ok($role, 'Role resource updated successfully');
     }
 
     /**
@@ -57,8 +68,11 @@ class RoleController extends Controller
      * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Role $role)
+    public function delete(Role $role)
     {
-        //
+        if (!$role->delete()) {
+            return Response::Error('Failed to delete role ' . $role['id']);
+        }
+        return Response::Ok($role, 'Role ' . $role['id'] . ' removed successfully');
     }
 }

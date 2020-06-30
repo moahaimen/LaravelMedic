@@ -17,7 +17,7 @@ class CategoryController extends Controller
     {
         $categories = Category::all();
 
-        return Response::Ok($categories, 'Categories list fetched successfully');
+        return Response::Ok($categories, 'Categoryies list fetched successfully');
     }
 
     /**
@@ -28,12 +28,12 @@ class CategoryController extends Controller
      */
     public function create(Request $request)
     {
-        $request->validate([
-            'name' => 'required|min:3|unique',
-            // 'description' => '', 
+        $data = $request->validate([
+            'name' => 'required|string|min:3|unique:categories,name',
+            'description' => 'required|string|min:3',
         ]);
 
-        $category = Category::create($request->all());
+        $category = Category::create($data);
 
         if ($category == null) {
             Response::Error('Failed to create new category');
@@ -50,14 +50,14 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        $request->validate([
-            'name' => 'nullable|min:3|unique,',
+        $data = $request->validate([
+            'name' => 'nullable|string|min:3|unique:categories,name',
+            'description' => 'nullable|string|min:3',
         ]);
 
-        $category->update($request->all());
+        if (!$category->update($data)) {
 
-        if ($category == null) {
-            Response::Error('Failed to update category ' + $category['id']);
+            return Response::Error('Failed to update category ' . $category['id']);
         }
         return Response::Ok($category, 'Category resource updated successfully');
     }
@@ -71,8 +71,8 @@ class CategoryController extends Controller
     public function delete(Category $category)
     {
         if (!$category->delete()) {
-            return Response::Error('Failed to delete category ' + $category['id']);
+            return Response::Error('Failed to delete category ' . $category['id']);
         }
-        return Response::Ok($category, 'Category ' + $category['id'] + ' removed successfully');
+        return Response::Ok($category, 'Category ' . $category['id'] . ' removed successfully');
     }
 }

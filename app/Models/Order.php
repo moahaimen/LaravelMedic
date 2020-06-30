@@ -6,5 +6,65 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    //
+    protected $fillable = [
+        'status_id', 'client_id',
+    ];
+    public $timestamps = false;
+
+    public function status()
+    {
+        return $this->belongsTo(OrderStatus::class)->get()->first();
+    }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, OrderProduct::class);
+    }
+
+    public function setProducts(array $data)
+    {
+        $products = array_column($this->products()->get()->toArray(), 'product_id');
+
+        $toAdd = [];
+        $toDelete = [];
+
+        foreach ($data as $i => $element) {
+            $product_id = $element['product_id'];
+            $res = array_search($product_id, $products, true);
+            if (is_bool($res) && $res == false) {
+                // array_push($toAdd, $product_id);
+                $toAdd[$product_id] = [
+                    'quantity' => $element['quantity'],
+                    'price_id' => Product::find($product_id)['price_id']
+                ];
+            }
+        }
+
+        $data2 = array_column($data, 'product_id');
+        foreach ($products as $j => $product) {
+            $res = array_search($product, $data2, true);
+            if (is_bool($res) && $res == false) {
+                array_push($toDelete, $product);
+            }
+        }
+
+        // dd($toAddAttributes, $toAdd, $toDelete);
+
+        $this->products()->attach($toAdd);
+        $this->products()->detach($toDelete);
+    }
+
+    public function sum()
+    {
+        $products = $this->products()->get();
+        $sum = 0;
+
+        foreach ($products as $i => $product) {
+            $price = $product->price()['value'];
+            $quantity = $product['qunatity'];
+
+            $sum += $price * $quantity;
+        }
+        return $sum;
+    }
 }

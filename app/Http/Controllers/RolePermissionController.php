@@ -2,63 +2,51 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Response;
+use App\Models\Role;
 use App\Models\RolePermission;
 use Illuminate\Http\Request;
 
 class RolePermissionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function fetch(Role $role)
     {
-        //
+        return $this->get_permissions($role);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function assign(Request $request, Role $role)
     {
-        //
+        $data = $request->validate([
+            'permissions' => 'required|array|min:1'
+        ])['permissions'];
+
+        $permissions = array_column($this->get_permissions($role)->toArray(), 'id');
+
+        $toAdd = [];
+        $toDelete = [];
+
+        foreach ($data as $i => $element) {
+            $res = array_search($element, $permissions, true);
+            if (is_bool($res) && $res == false) {
+                array_push($toAdd, $element);
+            }
+        }
+
+        foreach ($permissions as $j => $permission) {
+            $res = array_search($permission, $data, true);
+            if (is_bool($res) && $res == false) {
+                array_push($toDelete, $permission);
+            }
+        }
+
+        $role->permissions()->attach($toAdd);
+        $role->permissions()->detach($toDelete);
+
+        return Response::Ok($this->get_permissions($role), "Role's permissions assigned successfully");
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\RolePermission  $rolePermission
-     * @return \Illuminate\Http\Response
-     */
-    public function show(RolePermission $rolePermission)
+    private function get_permissions(Role $role)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\RolePermission  $rolePermission
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, RolePermission $rolePermission)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\RolePermission  $rolePermission
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(RolePermission $rolePermission)
-    {
-        //
+        return $role->permissions()->get();
     }
 }
