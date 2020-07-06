@@ -51,10 +51,10 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         if ($exception instanceof \Illuminate\Validation\ValidationException) {
-            return response()->json($exception->errors());
+            return response()->json($exception->errors())->setStatusCode(400);
         }
 
-        if ($exception instanceof \AuthException) {
+        if ($exception instanceof AuthException) {
             return response()->json($exception->getMessage());
         }
 

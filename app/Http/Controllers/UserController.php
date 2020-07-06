@@ -62,7 +62,7 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $data = $request->validate([
-            'user_name' => 'nullable|unique:users',
+            'user_name' => 'nullable|unique:users,user_name,' . $user['id'],
             'first_name' => 'nullable|min:3',
             'last_name' => 'nullable|min:3',
             'email' => 'nullable|email',

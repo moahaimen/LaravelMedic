@@ -31,7 +31,7 @@ class BrandController extends Controller
         $data = $request->validate([
             'name' => 'required|min:3|unique:brands,name',
             'description' => 'required|min:3',
-            'attachment_id' => 'required|exists:attachments,id'
+            // 'attachment_id' => 'required|exists:attachments,id'
         ]);
 
         $brand = Brand::create($data);

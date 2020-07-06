@@ -51,7 +51,7 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         $data = $request->validate([
-            'name' => 'nullable|string|min:3|unique:categories,name',
+            'name' => 'nullable|string|min:3|unique:categories,name,' . $category['id'],
             'description' => 'nullable|string|min:3',
         ]);
 
