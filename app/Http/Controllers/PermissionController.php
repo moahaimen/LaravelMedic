@@ -51,7 +51,7 @@ class PermissionController extends Controller
     public function update(Request $request, Permission $permission)
     {
         $data = $request->validate([
-            'name' => 'nullable|string|min:3|unique:categories,name',
+            'name' => 'nullable|string|min:3|unique:categories,name,' . $permission['id'],
             'description' => 'nullable|string|min:3',
         ]);
 

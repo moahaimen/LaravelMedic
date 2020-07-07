@@ -123,5 +123,6 @@ Route::middleware('auth:api')->prefix('/orders')->group(function () {
     Route::get('/', 'OrderController@get');
     Route::post('/', 'OrderController@create');
     Route::put('/{order}', 'OrderController@update');
+    Route::put('/{order}/status', 'OrderController@update_status');
     // Route::delete('/{order}', 'OrderController@delete');
 });

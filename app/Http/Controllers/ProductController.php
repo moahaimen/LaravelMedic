@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Response;
+use App\Models\Brand;
+use App\Models\Category;
 use App\Models\Price;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -16,7 +18,11 @@ class ProductController extends Controller
      */
     public function get()
     {
-        $products = Product::all();
+        $products = Product::with([
+            'brand',
+            'category',
+            'price',
+        ])->get();
 
         return Response::Ok($products, 'Products list fetched successfully');
     }
@@ -56,15 +62,16 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $data = $request->validate([
-            'name' => 'nullable|string|min:3|unique:products,name',
+            'name' => 'nullable|string|min:3|unique:products,name,' . $product['id'],
             'brand_id' => 'nullable|numeric|exists:brands,id',
             'category_id' => 'nullable|numeric|exists:categories,id',
             'is_main' => 'nullable|boolean',
             'price' => 'nullable|numeric'
         ]);
 
-        if (array_key_exists('price', $data)) {
-            $data['price_id'] = Price::make($data['price'], $product->price())['id'];
+        $price = $product->price()->get()->first();
+        if (array_key_exists('price', $data) && $price['value'] != $data['price']) {
+            $data['price_id'] = Price::make($data['price'], $price)['id'];
         }
 
         if (!$product->update($data)) {

@@ -12,7 +12,16 @@ class Product extends Model
 
     public function price()
     {
-        $first = $this->belongsTo(Price::class)->get()->first();
-        return $first;
+        return $this->belongsTo(Price::class);
+    }
+
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }

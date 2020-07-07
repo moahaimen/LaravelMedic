@@ -25,4 +25,8 @@ class Price extends Model
     protected $fillable = [
         'value', 'updated_at', 'previous_id'
     ];
+
+    protected $casts = [
+        'value' => 'int'
+    ];
 }

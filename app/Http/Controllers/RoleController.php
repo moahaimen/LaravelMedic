@@ -29,7 +29,7 @@ class RoleController extends Controller
     public function create(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string|min:3|unique:categories,name',
+            'name' => 'required|string|min:3|unique:roles,name',
             'description' => 'required|string|min:3',
         ]);
 
@@ -51,7 +51,7 @@ class RoleController extends Controller
     public function update(Request $request, Role $role)
     {
         $data = $request->validate([
-            'name' => 'nullable|string|min:3|unique:categories,name',
+            'name' => 'nullable|string|min:3|unique:roles,name,' . $role['id'],
             'description' => 'nullable|string|min:3',
         ]);
 

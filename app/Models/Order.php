@@ -7,18 +7,28 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     protected $fillable = [
-        'status_id', 'client_id',
+        'status_id', 'client_info_id', 'promo_code_id'
     ];
     public $timestamps = false;
 
     public function status()
     {
-        return $this->belongsTo(OrderStatus::class)->get()->first();
+        return $this->belongsTo(OrderStatus::class);
+    }
+
+    public function client()
+    {
+        return $this->belongsTo(ClientInformation::class, 'client_info_id', 'id');
+    }
+    
+    public function promo_code()
+    {
+        return $this->belongsTo(PromoCode::class);
     }
 
     public function products()
     {
-        return $this->belongsToMany(Product::class, OrderProduct::class);
+        return $this->hasMany(OrderProduct::class, 'order_id');
     }
 
     public function setProducts(array $data)
