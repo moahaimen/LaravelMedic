@@ -4,17 +4,16 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Drugs Store</title>
+        <title>Medical Products Store</title>
 
         <!-- Styles -->
         <style>
             html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-                font-weight: 200;
-                height: 100vh;
+                background-color: #e4e4e4;
+                font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+                font-weight: 500;
                 margin: 0;
+                padding: 0;
             }
 
             .full-height {
@@ -29,14 +28,34 @@
 
             .content {
                 text-align: center;
+                /* background-color: #fff; */
+                /* border: 1px solid rgba(0, 0, 0, 0.125); */
+                border-radius: .25rem;
+                padding: 10pt 20pt;
+                min-height: 250pt;
+                position: relative;
             }
 
             .title {
                 font-size: 84px;
+                color: #17a2b8;
             }
 
             .sub-title {
                 font-size: 24px;
+                color: #343a40;
+            }
+
+            .link {
+                text-decoration: none;
+                color: #6610f2;
+            }
+
+            .footer {
+                position: absolute;
+                bottom: 4pt;
+                text-align: center;
+                width: 100%;
             }
 
         </style>
@@ -46,10 +65,13 @@
             <div class="content">
                 <div class="title m-b-md">
                    Welcome
+                   <div class="sub-title">
+                       Medical products store
+                   </div>
                 </div>
 
-                <div class="sub-title">
-                    This page created by <a href="https://nazirallaham.000webhostapp.com">Nazeer</a> for testing purposes and nobody is going to see it.
+                <div class="footer">
+                    <a class="link" href="https://nazirallaham.000webhostapp.com">Mhd Nazeer Allahham</a>
                 </div>
             </div>
         </div>
