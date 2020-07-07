@@ -8,6 +8,18 @@ use Illuminate\Http\Request;
 
 class PromoCodeController extends Controller
 {
+    private static function getRandomCode() {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $code = '';
+      
+        for ($i = 0; $i < 8; $i++) {
+            $index = rand(0, strlen($characters) - 1);
+            $code .= $characters[$index];
+        }
+      
+        return $code;
+    }
+
     /**
      * Fetch a list of the resource.
      *
@@ -34,6 +46,7 @@ class PromoCodeController extends Controller
             'start_at' => 'required|date', 
             'finish_at' => 'required|date'
         ]);
+        $data['code'] = PromoCodeController::getRandomCode();
 
         $promoCode = PromoCode::create($data);
 
@@ -81,6 +94,10 @@ class PromoCodeController extends Controller
      */
     public function delete(PromoCode $promoCode)
     {
+        if($promoCode->hasOrders()) {
+            return Response::Error('Failed to delete promo code\'s after there it is used');
+        }
+
         if (!$promoCode->delete()) {
             return Response::Error('Failed to delete promoCode ' . $promoCode['id']);
         }

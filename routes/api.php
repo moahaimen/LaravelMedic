@@ -126,3 +126,11 @@ Route::middleware('auth:api')->prefix('/orders')->group(function () {
     Route::put('/{order}/status', 'OrderController@update_status');
     // Route::delete('/{order}', 'OrderController@delete');
 });
+
+Route::middleware('auth:api')->prefix('/promocodes')->group(function () {
+
+    Route::get('/', 'PromoCodeController@get');
+    Route::post('/', 'PromoCodeController@create');
+    Route::put('/{promoCode}', 'PromoCodeController@update');
+    Route::delete('/{promoCode}', 'PromoCodeController@delete');
+});
