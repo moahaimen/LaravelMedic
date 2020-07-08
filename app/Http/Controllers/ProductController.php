@@ -22,6 +22,7 @@ class ProductController extends Controller
             'brand',
             'category',
             'price',
+            'attachments',
         ])->get();
 
         return Response::Ok($products, 'Products list fetched successfully');
@@ -40,16 +41,23 @@ class ProductController extends Controller
             'brand_id' => 'required|numeric|exists:brands,id',
             'category_id' => 'required|numeric|exists:categories,id',
             'is_main' => 'required|boolean',
-            'price' => 'required|numeric'
+            'price' => 'required|numeric',
+            'attachments' => 'required|array|min:1|max:4',
+            'attachments.*' => 'required|numeric|exists:attachments,id',
         ]);
-        $data['price_id'] = Price::make($data['price'])['id'];
+        try {
+            $data['price_id'] = Price::make($data['price'])['id'];
 
-        $product = Product::create($data);
+            $product = Product::create($data);
+            $product->set_attachments($data['attachments']);
 
-        if ($product == null) {
+            if ($product == null) {
+                Response::Error('Failed to create new product');
+            }
+            return Response::Ok($product, 'Product resource created successfully');
+        } catch (\Exception $e) {
             Response::Error('Failed to create new product');
         }
-        return Response::Ok($product, 'Product resource created successfully');
     }
 
     /**
@@ -66,19 +74,30 @@ class ProductController extends Controller
             'brand_id' => 'nullable|numeric|exists:brands,id',
             'category_id' => 'nullable|numeric|exists:categories,id',
             'is_main' => 'nullable|boolean',
-            'price' => 'nullable|numeric'
+            'price' => 'nullable|numeric',
+            'attachments' => 'nullable|array|min:1|max:4',
+            'attachments.*' => 'nullable|numeric|exists:attachments,id',
         ]);
 
-        $price = $product->price()->get()->first();
-        if (array_key_exists('price', $data) && $price['value'] != $data['price']) {
-            $data['price_id'] = Price::make($data['price'], $price)['id'];
-        }
+        try {
+            if (array_key_exists('attachments', $data)) {
+                $product->set_attachments($data['attachments']);
+            }
 
-        if (!$product->update($data)) {
+            $price = $product->price()->get()->first();
+            if (array_key_exists('price', $data) && $price['value'] != $data['price']) {
+                $data['price_id'] = Price::make($data['price'], $price)['id'];
+            }
 
-            return Response::Error('Failed to update product ' . $product['id']);
+            if (!$product->update($data)) {
+
+                return Response::Error('Failed to update product ' . $product['id']);
+            }
+            return Response::Ok($product, 'Product resource updated successfully');
+        } catch (\Exception $e) {
+            // return Response::Error('Failed to update product xx ' . $product['id']);
+            throw $e;
         }
-        return Response::Ok($product, 'Product resource updated successfully');
     }
 
     /**

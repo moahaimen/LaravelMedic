@@ -81,7 +81,7 @@ Route::prefix('/permissions')->group(function () {
 
 Route::prefix('/attachments')->group(function () {
 
-    Route::get('/download/{id}', 'AttachmentController@download');
+    Route::get('/download/{name}', 'AttachmentController@download');
     Route::middleware('auth:api')->post('/upload', 'AttachmentController@upload');
 });
 

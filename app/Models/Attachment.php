@@ -21,8 +21,7 @@ class Attachment extends Model
     {
         $type = explode('/', $mimeType)[0];
 
-        switch($type)
-        {
+        switch ($type) {
             case 'image':
                 return Attachment::image;
             case 'video':
@@ -33,7 +32,7 @@ class Attachment extends Model
     }
 
     protected $fillable = [
-        'type', 'url', 'path', 'code'
+        'type', 'url', 'path', 'name'
     ];
 
     protected $hidden = [
