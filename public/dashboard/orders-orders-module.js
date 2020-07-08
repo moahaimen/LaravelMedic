@@ -27,7 +27,21 @@ class IndexComponent {
             },
             data: this.data,
             properties: [
-                'status_id', 'client_id'
+                {
+                    key: 'status.title',
+                    title: 'Status',
+                    type: 'string'
+                },
+                {
+                    key: 'client.name',
+                    title: 'Client Name',
+                    type: 'string'
+                },
+                {
+                    key: 'client.email',
+                    title: 'Client Email',
+                    type: 'string'
+                }
             ],
             title: 'Orders',
             actions: [
@@ -360,6 +374,7 @@ class OrderDetailsComponent {
         this.order = history.state.resource;
         if (!this.order) {
             this.ok();
+            return;
         }
         this.attributes = Object.keys(this.order);
         // tslint:disable-next-line: no-string-literal

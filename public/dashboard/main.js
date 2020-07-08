@@ -1120,6 +1120,8 @@ const environment = {
     promoCodesCreateUrl: 'promocodes',
     promoCodesUpdateUrl: 'promocodes/id',
     promoCodesDeleteUrl: 'promocodes/id',
+    attachmentUploadUrl: 'attachments/upload',
+    attachmentDownloadUrl: 'attachments/download/name',
     prepareUrl(apiName, params = {}) {
         let url = `${this.apiUrl}/${this[apiName]}`;
         if (params) {
@@ -1127,7 +1129,6 @@ const environment = {
                 .keys(params)
                 .forEach(key => url = url.replace(key, params[key]));
         }
-        console.log(url);
         return url;
     }
 };

@@ -27,7 +27,26 @@ class IndexComponent {
             },
             data: this.data,
             properties: [
-                'code', 'type', 'start_at', 'finish_at',
+                {
+                    key: 'code',
+                    title: 'Code',
+                    type: 'string'
+                },
+                {
+                    key: 'type',
+                    title: 'type',
+                    type: 'string'
+                },
+                {
+                    key: 'start_at',
+                    title: 'Start At',
+                    type: 'datetime'
+                },
+                {
+                    key: 'finish_at',
+                    title: 'Finish At',
+                    type: 'datetime'
+                },
             ],
             title: 'Promo codes'
         };
@@ -182,6 +201,7 @@ class PromoCodeDetailsComponent {
         this.promoCode = history.state.resource;
         if (!this.promoCode) {
             this.ok();
+            return;
         }
         this.attributes = Object.keys(this.promoCode);
         // tslint:disable-next-line: no-string-literal

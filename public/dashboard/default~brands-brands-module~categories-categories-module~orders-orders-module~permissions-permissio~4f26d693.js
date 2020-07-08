@@ -528,7 +528,7 @@ function TableViewComponent_th_13_Template(rf, ctx) { if (rf & 1) {
 } if (rf & 2) {
     const prop_r2 = ctx.$implicit;
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipeBind1"](2, 1, prop_r2));
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipeBind1"](2, 1, prop_r2.title));
 } }
 function TableViewComponent_tr_17_td_1_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "td");
@@ -537,8 +537,9 @@ function TableViewComponent_tr_17_td_1_Template(rf, ctx) { if (rf & 1) {
 } if (rf & 2) {
     const prop_r6 = ctx.$implicit;
     const element_r3 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]().$implicit;
+    const ctx_r4 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](element_r3[prop_r6]);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](ctx_r4.getDataItem(prop_r6, element_r3));
 } }
 function TableViewComponent_tr_17_i_3_Template(rf, ctx) { if (rf & 1) {
     const _r11 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
@@ -604,6 +605,7 @@ class TableViewComponent {
             type: 'url',
             url: this.context.urls.deleteUrl || ':id/delete'
         });
+        console.log(this.context.properties);
     }
     do(e, a) {
         switch (a.type) {
@@ -614,6 +616,34 @@ class TableViewComponent {
                 // tslint:disable-next-line: no-string-literal
                 this.router.navigate([a.url.replace(':id', e['id'])], { relativeTo: this.route, state: { resource: e }, });
                 break;
+        }
+    }
+    getDataItem(p, e) {
+        let value = e;
+        let x = true;
+        p.key.split('.').forEach(i => {
+            value = value[i];
+            if (value == null || value === undefined) {
+                x = false;
+                return;
+            }
+        });
+        if (!x) {
+            return '';
+        }
+        switch (p.type) {
+            case 'string':
+                return value.toString();
+            case 'int':
+                return Number.parseInt(value.toString(), 10).toString();
+            case 'float':
+                return Number.parseFloat(value.toString()).toString();
+            case 'date':
+                return new Date(value.toString()).toLocaleDateString();
+            case 'time':
+                return new Date(value.toString()).toLocaleTimeString();
+            case 'datetime':
+                return new Date(value.toString()).toLocaleString();
         }
     }
 }

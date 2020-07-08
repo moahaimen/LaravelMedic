@@ -27,10 +27,26 @@ class IndexComponent {
             },
             data: this.data,
             properties: [
-                'user_name',
-                'email',
-                'role_id',
-                'status_id'
+                {
+                    key: 'user_name',
+                    title: 'User Name',
+                    type: 'string'
+                },
+                {
+                    key: 'email',
+                    title: 'Email',
+                    type: 'string'
+                },
+                {
+                    key: 'role.name',
+                    title: 'Role',
+                    type: 'string'
+                },
+                {
+                    key: 'status.title',
+                    title: 'Status',
+                    type: 'string'
+                },
             ],
             title: 'Users'
         };
@@ -184,6 +200,7 @@ class UserDetailsComponent {
         this.user = history.state.resource;
         if (!this.user) {
             this.ok();
+            return;
         }
         this.attributes = Object.keys(this.user);
         // tslint:disable-next-line: no-string-literal

@@ -118,6 +118,7 @@ class BrandDetailsComponent {
         this.brand = history.state.resource;
         if (!this.brand) {
             this.ok();
+            return;
         }
         this.attributes = Object.keys(this.brand);
         // tslint:disable-next-line: no-string-literal
@@ -512,7 +513,26 @@ class IndexComponent {
             },
             data: this.data,
             properties: [
-                'name', 'description', 'created_at', 'updated_at',
+                {
+                    key: 'name',
+                    title: 'Name',
+                    type: 'string'
+                },
+                {
+                    key: 'description',
+                    title: 'Description',
+                    type: 'string'
+                },
+                {
+                    key: 'created_at',
+                    title: 'Created At',
+                    type: 'datetime'
+                },
+                {
+                    key: 'updated_at',
+                    title: 'Updated At',
+                    type: 'datetime'
+                },
             ],
             title: 'Brands'
         };

@@ -27,7 +27,26 @@ class IndexComponent {
             },
             data: this.data,
             properties: [
-                'name', 'description', 'created_at', 'updated_at',
+                {
+                    key: 'name',
+                    title: 'Name',
+                    type: 'string'
+                },
+                {
+                    key: 'description',
+                    title: 'Description',
+                    type: 'string'
+                },
+                {
+                    key: 'created_at',
+                    title: 'Created At',
+                    type: 'datetime'
+                },
+                {
+                    key: 'updated_at',
+                    title: 'Updated At',
+                    type: 'datetime'
+                },
             ],
             title: 'Roles'
         };
@@ -182,6 +201,7 @@ class RoleDetailsComponent {
         this.role = history.state.resource;
         if (!this.role) {
             this.ok();
+            return;
         }
         this.attributes = Object.keys(this.role);
         // tslint:disable-next-line: no-string-literal
