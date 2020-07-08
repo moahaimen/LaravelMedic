@@ -14,27 +14,18 @@ class AttachmentController extends Controller
     {
         $data = $request->validate([
             'type' => 'required|string|in:video,image',
-            'image' => 'required_if:type,image|dimensions:ratio=3/2|mimes:jpeg,png',
-            'video' => 'required_if:type,video|mimes:mp4'
+            // 'file' => 'required|dimensions:ratio=3/2|mimes:jpeg,png,mp4',
+            'file' => 'required|mimes:jpeg,png,mp4',
         ]);
 
-        $file = null;
-
-        if ($data['type'] === 'video') {
-            $file = $request->video;
-            $data['type'] = Attachment::video;
-        } else if ($data['type'] === 'image') {
-            $file = $request->image;
-            $data['type'] = Attachment::image;
-        }
-
-        $data['name'] = time() . '.' . $file->extension();
+        $data['type'] = $data['type'] == 'video' ? Attachment::video : Attachment::image;
+        $data['name'] = time() . '.' . $data['file']->extension();
         $data['path'] = $data['type'] . '/' . $data['name'];
         $data['url'] = 'http://localhost:8000/api/attachments/download/' . $data['name'];
 
         $dir = storage_path('app') . '/' . $data['type'];
 
-        if (!$file->move($dir, $data['name'])) {
+        if (!$data['file']->move($dir, $data['name'])) {
             return Response::Error('Failed to save the attachment');
         }
         $attachment = Attachment::create($data);

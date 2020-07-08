@@ -16,7 +16,7 @@ class UserController extends Controller
      */
     public function get()
     {
-        $users = User::all();
+        $users = User::with(['role', 'status'])->get();
 
         return Response::Ok($users, 'Users list fetched successfully');
     }

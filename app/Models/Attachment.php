@@ -38,4 +38,8 @@ class Attachment extends Model
     protected $hidden = [
         'path'
     ];
+
+    protected $casts = [
+        'type' => 'int'
+    ];
 }

@@ -1,79 +1,36 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<html>
 
-        <title>Medical Products Store</title>
+<head>
+    <meta charset="utf-8" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/dashboard/assets/img/apple-icon.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/dashboard/assets/img/favicon.png" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+    <meta name="viewport" content="width=device-width" />
 
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #e4e4e4;
-                font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-                font-weight: 500;
-                margin: 0;
-                padding: 0;
-            }
+    <title>Drug Store 2020</title>
 
-            .full-height {
-                height: 100vh;
-            }
+    <base href="/dashboard/" />
 
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
+    <!--     Fonts and icons     -->
+    <link href="/dashboard/assets/css/montserrat.font.css" rel="stylesheet" />
+    <link href="/dashboard/assets/css/font-awesome.min.css" rel="stylesheet" />
+</head>
 
-            .content {
-                text-align: center;
-                /* background-color: #fff; */
-                /* border: 1px solid rgba(0, 0, 0, 0.125); */
-                border-radius: .25rem;
-                padding: 10pt 20pt;
-                min-height: 250pt;
-                position: relative;
-            }
-
-            .title {
-                font-size: 84px;
-                color: #17a2b8;
-            }
-
-            .sub-title {
-                font-size: 24px;
-                color: #343a40;
-            }
-
-            .link {
-                text-decoration: none;
-                color: #6610f2;
-            }
-
-            .footer {
-                position: absolute;
-                bottom: 4pt;
-                text-align: center;
-                width: 100%;
-            }
-
-        </style>
-    </head>
-    <body>
-        <div class="flex-center position-ref full-height">
-            <div class="content">
-                <div class="title m-b-md">
-                   Welcome
-                   <div class="sub-title">
-                       Medical products store
-                   </div>
-                </div>
-
-                <div class="footer">
-                    <a class="link" href="https://nazirallaham.000webhostapp.com">Mhd Nazeer Allahham</a>
-                </div>
+<body>
+    <app-root>
+        <div class="logo-wrapper">
+            <div class="outer-circle">
+                <div class="inner-circle"></div>
             </div>
         </div>
-    </body>
+    </app-root>
+    <script src="/dashboard/runtime.js" defer></script>
+    <script src="/dashboard/polyfills.js" defer></script>
+    <script src="/dashboard/styles.js" defer></script>
+    <script src="/dashboard/vendor.js" defer></script>
+    <script src="/dashboard/main.js" defer></script>
+</body>
+
 </html>
