@@ -48,19 +48,23 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $data = $request->validate([
-            'email' => 'required',
-            'password' => 'required',
-        ]);
+        try {
+            $data = $request->validate([
+                'email' => 'required',
+                'password' => 'required',
+            ]);
 
-        $data['request'] = $request;
+            $data['request'] = $request;
 
-        if ($data == null || ($user = $this->attempt($data)) == null) {
+            if ($data == null || ($user = $this->attempt($data)) == null) {
+                return Response::Error('Incorrect UserName or Password');
+            }
+
+            auth()->setUser($user);
+            return $this->composeResponse($user);
+        } catch (\Exception $e) {
             return Response::Error('Incorrect UserName or Password');
         }
-
-        auth()->setUser($user);
-        return $this->composeResponse($user);
     }
 
     /**

@@ -23,7 +23,7 @@ class Response
 
     public static function Error(string $message = 'Failed.'): HttpResponse
     {
-        return response()->json(null, 400, [
+        return response()->json('', 400, [
             'Message' => $message
         ]);
     }
