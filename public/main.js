@@ -1084,7 +1084,8 @@ __webpack_require__.r(__webpack_exports__);
 // The list of file replacements can be found in `angular.json`.
 const environment = {
     production: false,
-    apiUrl: 'http://localhost:8000/api',
+    // apiUrl: 'http://localhost:8000/api',
+    apiUrl: 'https://molardentalmaterials.com/api',
     loginUrl: 'auth/login',
     registerUrl: 'auth/register',
     usersFetchUrl: 'users',

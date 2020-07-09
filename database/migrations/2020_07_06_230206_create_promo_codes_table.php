@@ -22,8 +22,8 @@ class CreatePromoCodesTable extends Migration
             $table->enum('type', PromoCode::discountTypes())->nullable(false);
             $table->unsignedDecimal('discount')->nullable(false);
             $table->timestamps();
-            $table->timestamp('start_at')->nullable(false);
-            $table->timestamp('finish_at')->nullable(false);
+            $table->timestamp('start_at')->nullable(false)->default(DB::raw('current_timestamp'));
+            $table->timestamp('finish_at')->nullable(false)->default(DB::raw('current_timestamp'));
         });
     }
 
