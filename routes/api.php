@@ -14,10 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::prefix('/auth')->group(function () {
 
     Route::post('/register', 'AuthController@register');
@@ -30,7 +26,7 @@ Route::prefix('/auth')->group(function () {
         ->group(function () {
             Route::get('/', 'AuthController@me');
 
-            Route::prefix('/orders')->group(function() {
+            Route::prefix('/orders')->group(function () {
                 Route::get('/', 'OrderController@get');
                 Route::post('/', 'OrderController@create');
                 Route::put('/{order}', 'OrderController@update');
