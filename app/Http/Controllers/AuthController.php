@@ -107,7 +107,7 @@ class AuthController extends Controller
         $users = User::where('email', $credintials['email'])->get();
 
         if ($users == null || count($users) != 1) {
-            throw new \App\Exceptions\AuthException("xx");
+            Response::Error("Invalid Username or Password");
         }
         return $users[0];
     }
