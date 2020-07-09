@@ -18,8 +18,8 @@ class Passport extends Migration
             $table->bigInteger('user_id')->nullable(false)->index();
             $table->bigInteger('client_id')->nullable(false);
 
-            $table->string('name');
-            $table->text('scopes');
+            $table->string('name')->nullable();
+            $table->text('scopes')->nullable();
             $table->boolean('revoked')->nullable(false);
 
             $table->timestamp('created_at', 0);
@@ -32,19 +32,19 @@ class Passport extends Migration
             $table->bigInteger('user_id')->nullable(false)->index();
             $table->bigInteger('client_id')->nullable(false);
 
-            $table->text('scopes');
+            $table->text('scopes')->nullable();
             $table->boolean('revoked')->nullable(false);
 
             $table->timestamp('expires_at', 0);
         });
 
         Schema::create('oauth_clients', function (Blueprint $table) {
-            $table->bigInteger('id')->nullable(false);
-            $table->bigInteger('user_id');
+            $table->id();
+            $table->bigInteger('user_id')->nullable();
 
             $table->string('name')->nullable(false);
-            $table->string('secret');
-            $table->string('provider');
+            $table->string('secret')->nullable();
+            $table->string('provider')->nullable();
             $table->text('redirect')->nullable(false);
             $table->boolean('personal_access_client')->nullable(false);
             $table->boolean('password_client')->nullable(false);
