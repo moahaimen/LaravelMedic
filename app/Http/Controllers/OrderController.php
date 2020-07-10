@@ -7,6 +7,7 @@ use App\Models\ClientInformation;
 use App\Models\Order;
 use App\Models\OrderStatus;
 use App\Models\PromoCode;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -17,17 +18,23 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function get()
+    public function get(Request $request)
     {
         $orders = Order::with([
-            'status',
-            'products',
-            'products.price',
             'promo_code',
+            'status',
             'client',
-        ])->get();
+            'order_products',
+            'order_products.price',
+            'order_products.product',
+        ]);
 
-        return Response::Ok($orders, 'Orders list fetched successfully');
+        $s = $request->input('status');
+        if ($s != null) {
+            $orders = $orders->where('status.title', $s);
+        }
+
+        return Response::Ok($orders->get(), 'Orders list fetched successfully');
     }
 
     /**
@@ -44,7 +51,7 @@ class OrderController extends Controller
             'products.*.product_id' => 'required|numeric|exists:products,id',
             'client.name' => 'required|string|min:3',
             'client.email' => 'required|email',
-            'client.phone' => 'required',
+            'client.phone' => 'required|string',
             'client.province' => 'required|string|min:3',
             'client.address' => 'required|string|min:3',
             'client.notes' => 'nullable|string|min:3',
@@ -60,7 +67,7 @@ class OrderController extends Controller
             }
 
             $order = Order::create($data);
-            $order->setProducts($data['products']);
+            $order->set_products($data['products']);
 
             if ($order == null) {
                 Response::Error('Failed to create new order');
@@ -90,7 +97,7 @@ class OrderController extends Controller
             'products.*.product_id' => 'nullable|numeric|exists:products,id',
             'client.name' => 'nullable|string|min:3',
             'client.email' => 'nullable|email',
-            'client.phone' => 'nullable|phone',
+            'client.phone' => 'nullable|string',
             'client.province' => 'nullable|string|min:3',
             'client.address' => 'nullable|string|min:3',
             'client.notes' => 'nullable|string|min:3',
@@ -100,7 +107,7 @@ class OrderController extends Controller
 
         try {
             if (array_key_exists('products', $data)) {
-                $order->setProducts($data['products']);
+                $order->set_products($data['products']);
             }
 
             if (array_key_exists('client', $data)) {

@@ -30,8 +30,13 @@ class Order extends Model
     {
         return $this->belongsToMany(Product::class, OrderProduct::class, 'order_id');
     }
+    
+    public function order_products()
+    {
+        return $this->hasMany(OrderProduct::class, 'order_id');
+    }
 
-    public function setProducts(array $data)
+    public function set_products(array $data)
     {
         $products = array_column($this->products()->get()->toArray(), 'product_id');
 
