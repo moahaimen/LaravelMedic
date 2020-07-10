@@ -28,7 +28,7 @@ class Order extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Order::class, OrderProduct::class, 'order_id');
+        return $this->belongsToMany(Product::class, OrderProduct::class, 'order_id');
     }
 
     public function setProducts(array $data)

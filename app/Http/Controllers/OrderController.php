@@ -38,20 +38,20 @@ class OrderController extends Controller
      */
     public function create(Request $request)
     {
+        $data = $request->validate([
+            'products' => 'required|array|min:1',
+            'products.*.quantity' => 'required|numeric|min:1',
+            'products.*.product_id' => 'required|numeric|exists:products,id',
+            'client.name' => 'required|string|min:3',
+            'client.email' => 'required|email',
+            'client.phone' => 'required',
+            'client.province' => 'required|string|min:3',
+            'client.address' => 'required|string|min:3',
+            'client.notes' => 'nullable|string|min:3',
+            'client.user_id' => 'nullable|numeric|exists:users,id',
+            'promo_code' => 'nullable|numeric|exists:promo_codes,code',
+        ]);
         try {
-            $data = $request->validate([
-                'products' => 'required|array|min:1',
-                'products.*.quantity' => 'required|numeric|min:1',
-                'products.*.product_id' => 'required|numeric|exists:products,id',
-                'client.name' => 'required|string|min:3',
-                'client.email' => 'required|email',
-                'client.phone' => 'required',
-                'client.province' => 'required|string|min:3',
-                'client.address' => 'required|string|min:3',
-                'client.notes' => 'nullable|string|min:3',
-                'client.user_id' => 'nullable|numeric|exists:users,id',
-                'promo_code' => 'nullable|numeric|exists:promo_codes,code',
-            ]);
             $data['status_id'] = OrderStatus::make(OrderStatus::pending, auth()->id())['id'];
             $data['client_id'] = ClientInformation::make($data['client'])['id'];
 
@@ -80,25 +80,25 @@ class OrderController extends Controller
      */
     public function update(Request $request, Order $order)
     {
+        if ($order->status()->get()->first()['title'] != OrderStatus::pending) {
+            return Response::Error('You cannot update the order after it is accepted');
+        }
+
+        $data = $request->validate([
+            'products' => 'nullable|array|min:1',
+            'products.*.quantity' => 'nullable|numeric|min:1',
+            'products.*.product_id' => 'nullable|numeric|exists:products,id',
+            'client.name' => 'nullable|string|min:3',
+            'client.email' => 'nullable|email',
+            'client.phone' => 'nullable|phone',
+            'client.province' => 'nullable|string|min:3',
+            'client.address' => 'nullable|string|min:3',
+            'client.notes' => 'nullable|string|min:3',
+            'client.user_id' => 'nullable|numeric|exists:users,id',
+            'promo_code_id' => 'nullable|numeric|exists:promo_codes,id',
+        ]);
+
         try {
-            if ($order->status()->get()->first()['title'] != OrderStatus::pending) {
-                return Response::Error('You cannot update the order after it is accepted');
-            }
-
-            $data = $request->validate([
-                'products' => 'nullable|array|min:1',
-                'products.*.quantity' => 'nullable|numeric|min:1',
-                'products.*.product_id' => 'nullable|numeric|exists:products,id',
-                'client.name' => 'nullable|string|min:3',
-                'client.email' => 'nullable|email',
-                'client.phone' => 'nullable|phone',
-                'client.province' => 'nullable|string|min:3',
-                'client.address' => 'nullable|string|min:3',
-                'client.notes' => 'nullable|string|min:3',
-                'client.user_id' => 'nullable|numeric|exists:users,id',
-                'promo_code_id' => 'nullable|numeric|exists:promo_codes,id',
-            ]);
-
             if (array_key_exists('products', $data)) {
                 $order->setProducts($data['products']);
             }
