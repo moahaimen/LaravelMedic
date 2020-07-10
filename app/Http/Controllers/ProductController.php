@@ -38,6 +38,7 @@ class ProductController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|min:3|unique:products,name',
+            'description' => 'required|string|min:3',
             'brand_id' => 'required|numeric|exists:brands,id',
             'category_id' => 'required|numeric|exists:categories,id',
             'is_main' => 'required|boolean',
@@ -71,6 +72,7 @@ class ProductController extends Controller
     {
         $data = $request->validate([
             'name' => 'nullable|string|min:3|unique:products,name,' . $product['id'],
+            'description' => 'required|string|min:3',
             'brand_id' => 'nullable|numeric|exists:brands,id',
             'category_id' => 'nullable|numeric|exists:categories,id',
             'is_main' => 'nullable|boolean',
