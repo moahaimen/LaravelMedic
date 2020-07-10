@@ -25,13 +25,18 @@ class RoleSeeder extends Seeder
             "description" => "all permissions are granted"
         ];
 
+        $tester = [
+            "name" => "tester",
+            "description" => "testing the system"
+        ];
+
         $user = [
             "name" => "user",
-            "description" => "Orders management only allowed"
+            "description" => "orders management only allowed"
         ];
 
         $roles = [];
-        array_push($roles, $administrator, $user);
+        array_push($roles, $administrator, $tester, $user);
 
         return $roles;
     }
