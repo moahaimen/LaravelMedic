@@ -15,7 +15,7 @@ class BrandController extends Controller
      */
     public function get()
     {
-        $brands = Brand::all();
+        $brands = Brand::with('attachment')->get();
 
         return Response::Ok($brands, 'Brands list fetched successfully');
     }
