@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     protected $fillable = [
-        'status_id', 'client_info_id', 'promo_code_id'
+        'status_id', 'client_id', 'promo_code_id'
     ];
     public $timestamps = false;
 
@@ -18,9 +18,9 @@ class Order extends Model
 
     public function client()
     {
-        return $this->belongsTo(ClientInformation::class, 'client_info_id', 'id');
+        return $this->belongsTo(ClientInformation::class, 'client_id', 'id');
     }
-    
+
     public function promo_code()
     {
         return $this->belongsTo(PromoCode::class);
@@ -28,7 +28,7 @@ class Order extends Model
 
     public function products()
     {
-        return $this->hasMany(OrderProduct::class, 'order_id');
+        return $this->belongsToMany(Order::class, OrderProduct::class, 'order_id');
     }
 
     public function setProducts(array $data)

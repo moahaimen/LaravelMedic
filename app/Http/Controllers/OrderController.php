@@ -52,9 +52,9 @@ class OrderController extends Controller
             'promo_code' => 'nullable|numeric|exists:promo_codes,code',
         ]);
         $data['status_id'] = OrderStatus::make(OrderStatus::pending, auth()->id())['id'];
-        $data['client_info_id'] = ClientInformation::make($data['client'])['id'];
-        
-        if(array_key_exists('promo_code', $data) && $data['promo_code'] != null) {
+        $data['client_id'] = ClientInformation::make($data['client'])['id'];
+
+        if (array_key_exists('promo_code', $data) && $data['promo_code'] != null) {
             $data['promo_code_id'] = PromoCode::all()->where('code', '=', $data['promo_code'])->first()['id'];
         }
 
@@ -99,7 +99,7 @@ class OrderController extends Controller
         }
 
         if (array_key_exists('client', $data)) {
-            $info = ClientInformation::find($order['client_info_id']);
+            $info = ClientInformation::find($order['client_id']);
 
             $info->update($data['client']);
             $info->save();
@@ -150,7 +150,7 @@ class OrderController extends Controller
                 ->delete();
 
             DB::table('client_information')
-                ->where('id', $order['client_info_id'])
+                ->where('id', $order['client_id'])
                 ->delete();
 
             DB::table('orders')->delete($order['id']);

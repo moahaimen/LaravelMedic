@@ -15,24 +15,12 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/command', 'ArtisanController@command');
-
 Route::get('/migrate', 'ArtisanController@migrate');
-
 Route::get('/clear-cache', 'ArtisanController@clear_cache');
-
-//Reoptimized class loader:
 Route::get('/optimize', 'ArtisanController@optimize');
-
-//Route cache:
 Route::get('/route-cache', 'ArtisanController@route_cache');
-
-//Clear Route cache:
 Route::get('/route-clear', 'ArtisanController@route_clear');
-
-//Clear View cache:
 Route::get('/view-clear', 'ArtisanController@view_clear');
-
-//Clear Config cache:
 Route::get('/config-cache', 'ArtisanController@config_cache');
 
 Route::fallback('IndexController@index');

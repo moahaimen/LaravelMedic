@@ -9,6 +9,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
 
 class ArtisanController extends Controller
 {
+    
     function command(Request $request)
     {
         $output = new BufferedOutput;
@@ -21,7 +22,7 @@ class ArtisanController extends Controller
 
     function migrate()
     {
-        $exitCode = Artisan::call('migrate:fresh --seed');
+        $exitCode = Artisan::call('migrate:fresh', ['--seed' => true]);
         return '<h1> migrate:fresh --seed ' . $exitCode . '</h1>';
     }
 
