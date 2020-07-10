@@ -21,8 +21,8 @@ class OrderController extends Controller
     {
         $orders = Order::with([
             'status',
+            'products',
             'products.price',
-            'products.product',
             'promo_code',
             'client',
         ])->get();
