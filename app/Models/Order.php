@@ -44,6 +44,7 @@ class Order extends Model
             if (is_bool($res) && $res == false) {
                 // array_push($toAdd, $product_id);
                 $toAdd[$product_id] = [
+                    'product_id' => $product_id,
                     'quantity' => $element['quantity'],
                     'price_id' => Product::find($product_id)['price_id']
                 ];

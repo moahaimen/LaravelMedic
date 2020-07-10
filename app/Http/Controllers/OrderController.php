@@ -38,33 +38,37 @@ class OrderController extends Controller
      */
     public function create(Request $request)
     {
-        $data = $request->validate([
-            'products' => 'required|array|min:1',
-            'products.*.quantity' => 'required|numeric|min:1',
-            'products.*.product_id' => 'required|numeric|exists:products,id',
-            'client.name' => 'required|string|min:3',
-            'client.email' => 'required|email',
-            'client.phone' => 'required',
-            'client.province' => 'required|string|min:3',
-            'client.address' => 'required|string|min:3',
-            'client.notes' => 'nullable|string|min:3',
-            'client.user_id' => 'nullable|numeric|exists:users,id',
-            'promo_code' => 'nullable|numeric|exists:promo_codes,code',
-        ]);
-        $data['status_id'] = OrderStatus::make(OrderStatus::pending, auth()->id())['id'];
-        $data['client_id'] = ClientInformation::make($data['client'])['id'];
+        try {
+            $data = $request->validate([
+                'products' => 'required|array|min:1',
+                'products.*.quantity' => 'required|numeric|min:1',
+                'products.*.product_id' => 'required|numeric|exists:products,id',
+                'client.name' => 'required|string|min:3',
+                'client.email' => 'required|email',
+                'client.phone' => 'required',
+                'client.province' => 'required|string|min:3',
+                'client.address' => 'required|string|min:3',
+                'client.notes' => 'nullable|string|min:3',
+                'client.user_id' => 'nullable|numeric|exists:users,id',
+                'promo_code' => 'nullable|numeric|exists:promo_codes,code',
+            ]);
+            $data['status_id'] = OrderStatus::make(OrderStatus::pending, auth()->id())['id'];
+            $data['client_id'] = ClientInformation::make($data['client'])['id'];
 
-        if (array_key_exists('promo_code', $data) && $data['promo_code'] != null) {
-            $data['promo_code_id'] = PromoCode::all()->where('code', '=', $data['promo_code'])->first()['id'];
-        }
+            if (array_key_exists('promo_code', $data) && $data['promo_code'] != null) {
+                $data['promo_code_id'] = PromoCode::all()->where('code', '=', $data['promo_code'])->first()['id'];
+            }
 
-        $order = Order::create($data);
-        $order->setProducts($data['products']);
+            $order = Order::create($data);
+            $order->setProducts($data['products']);
 
-        if ($order == null) {
+            if ($order == null) {
+                Response::Error('Failed to create new order');
+            }
+            return Response::Ok($order, 'Order resource created successfully');
+        } catch (\Exception $e) {
             Response::Error('Failed to create new order');
         }
-        return Response::Ok($order, 'Order resource created successfully');
     }
 
     /**
@@ -76,39 +80,43 @@ class OrderController extends Controller
      */
     public function update(Request $request, Order $order)
     {
-        if ($order->status()->get()->first()['title'] != OrderStatus::pending) {
-            return Response::Error('You cannot update the order after it is accepted');
-        }
+        try {
+            if ($order->status()->get()->first()['title'] != OrderStatus::pending) {
+                return Response::Error('You cannot update the order after it is accepted');
+            }
 
-        $data = $request->validate([
-            'products' => 'nullable|array|min:1',
-            'products.*.quantity' => 'nullable|numeric|min:1',
-            'products.*.product_id' => 'nullable|numeric|exists:products,id',
-            'client.name' => 'nullable|string|min:3',
-            'client.email' => 'nullable|email',
-            'client.phone' => 'nullable|phone',
-            'client.province' => 'nullable|string|min:3',
-            'client.address' => 'nullable|string|min:3',
-            'client.notes' => 'nullable|string|min:3',
-            'client.user_id' => 'nullable|numeric|exists:users,id',
-            'promo_code_id' => 'nullable|numeric|exists:promo_codes,id',
-        ]);
+            $data = $request->validate([
+                'products' => 'nullable|array|min:1',
+                'products.*.quantity' => 'nullable|numeric|min:1',
+                'products.*.product_id' => 'nullable|numeric|exists:products,id',
+                'client.name' => 'nullable|string|min:3',
+                'client.email' => 'nullable|email',
+                'client.phone' => 'nullable|phone',
+                'client.province' => 'nullable|string|min:3',
+                'client.address' => 'nullable|string|min:3',
+                'client.notes' => 'nullable|string|min:3',
+                'client.user_id' => 'nullable|numeric|exists:users,id',
+                'promo_code_id' => 'nullable|numeric|exists:promo_codes,id',
+            ]);
 
-        if (array_key_exists('products', $data)) {
-            $order->setProducts($data['products']);
-        }
+            if (array_key_exists('products', $data)) {
+                $order->setProducts($data['products']);
+            }
 
-        if (array_key_exists('client', $data)) {
-            $info = ClientInformation::find($order['client_id']);
+            if (array_key_exists('client', $data)) {
+                $info = ClientInformation::find($order['client_id']);
 
-            $info->update($data['client']);
-            $info->save();
-        }
+                $info->update($data['client']);
+                $info->save();
+            }
 
-        if (!$order->update($data)) {
+            if (!$order->update($data)) {
+                return Response::Error('Failed to update order ' . $order['id']);
+            }
+            return Response::Ok($order, 'Order resource updated successfully');
+        } catch (\Exception $e) {
             return Response::Error('Failed to update order ' . $order['id']);
         }
-        return Response::Ok($order, 'Order resource updated successfully');
     }
 
     /**
