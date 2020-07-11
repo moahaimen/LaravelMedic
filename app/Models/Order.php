@@ -69,18 +69,4 @@ class Order extends Model
         $this->products()->attach($toAdd);
         $this->products()->detach($toDelete);
     }
-
-    public function sum()
-    {
-        $products = $this->products()->get();
-        $sum = 0;
-
-        foreach ($products as $i => $product) {
-            $price = $product->price()['value'];
-            $quantity = $product['qunatity'];
-
-            $sum += $price * $quantity;
-        }
-        return $sum;
-    }
 }

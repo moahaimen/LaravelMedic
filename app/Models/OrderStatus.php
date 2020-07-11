@@ -37,4 +37,8 @@ class OrderStatus extends Model
     protected $fillable = [
         'title', 'changed_at', 'changed_by', 'previous_id'
     ];
+
+    protected $casts = [
+        'title' => 'int'
+    ];
 }

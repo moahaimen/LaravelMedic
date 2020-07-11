@@ -13,6 +13,37 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
+    private function handle_order_status(Builder $orders, int $status): Builder
+    {
+        if ($status == 0) {
+            $orders = $orders->whereHas('status', function (Builder $q) {
+                $q->where('title', 0);
+            });
+        } else if ($status == 1) {
+            $orders = $orders->whereHas('status', function (Builder $q) {
+                $q->where('title', 1);
+            });
+        } else if ($status == 2) {
+            $orders = $orders->whereHas('status', function (Builder $q) {
+                $q->where('title', 2);
+            });
+        } else if ($status == 3) {
+            $orders = $orders->whereHas('status', function (Builder $q) {
+                $q->where('title', 3);
+            });
+        } else if ($status == 4) {
+            $orders = $orders->whereHas('status', function (Builder $q) {
+                $q->where('title', 4);
+            });
+        } else if ($status == 5) {
+            $orders = $orders->whereHas('status', function (Builder $q) {
+                $q->where('title', 5);
+            });
+        }
+
+        return $orders;
+    }
+
     /**
      * Fetch a list of the resource.
      *
@@ -29,10 +60,8 @@ class OrderController extends Controller
             'order_products.product',
         ]);
 
-        $s = $request->input('status');
-        if ($s != null) {
-            $orders = $orders->where('status.title', $s);
-        }
+        $status = $request->input('status');
+        $orders = $this->handle_order_status($orders, $status);
 
         return Response::Ok($orders->get(), 'Orders list fetched successfully');
     }
@@ -137,17 +166,23 @@ class OrderController extends Controller
     {
         $status = $order->status()->get()->first()['title'];
         if ($status == OrderStatus::canceled || $status == OrderStatus::rejected) {
-            return Response::Error('You cannot update order status since it is canceled or rejected');
+            return Response::Error('Order status cannot be changed since it is canceled or rejected');
+        }
+        if ($status == OrderStatus::deliveried) {
+            return Response::Error('Order status cannot be changed since it is deliveried');
+        }
+        if ($status == OrderStatus::shipping) {
+            return Response::Error('Order status cannot be changed since it is shipped');
         }
 
         $data = $request->validate([
-            'status' => 'required|numeric|min:' . $status,
+            'status' => 'required|numeric|gt:' . $status,
         ]);
 
         $order['status_id'] = OrderStatus::make($data['status'], auth()->id())['id'];
         $order->save();
 
-        return Response::Ok('Order\'s status updated successfully');
+        return Response::Ok($order, 'Order\'s status updated successfully');
     }
 
     /**
