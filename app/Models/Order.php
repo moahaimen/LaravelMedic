@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Order extends Model
 {
@@ -30,7 +31,7 @@ class Order extends Model
     {
         return $this->belongsToMany(Product::class, OrderProduct::class, 'order_id');
     }
-    
+
     public function order_products()
     {
         return $this->hasMany(OrderProduct::class, 'order_id');
@@ -38,35 +39,27 @@ class Order extends Model
 
     public function set_products(array $data)
     {
-        $products = array_column($this->products()->get()->toArray(), 'product_id');
+        $products = $this->order_products()->get();
 
-        $toAdd = [];
-        $toDelete = [];
+        $this->products()->detach();
 
-        foreach ($data as $i => $element) {
+        foreach ($data as $key => $element) {
             $product_id = $element['product_id'];
-            $res = array_search($product_id, $products, true);
-            if (is_bool($res) && $res == false) {
-                // array_push($toAdd, $product_id);
-                $toAdd[$product_id] = [
+            $order_product = $products->find($product_id);
+
+            if ($order_product != null) {
+                $order_product->update([
+                    'qunatity' => $element['quantity'],
+                ]);
+            } else {
+
+                DB::table('order_products')->insert([
+                    'order_id' => $this->id,
                     'product_id' => $product_id,
                     'quantity' => $element['quantity'],
-                    'price_id' => Product::find($product_id)['price_id']
-                ];
+                    'price_id' => $element['price']['id'],
+                ]);
             }
         }
-
-        $data2 = array_column($data, 'product_id');
-        foreach ($products as $j => $product) {
-            $res = array_search($product, $data2, true);
-            if (is_bool($res) && $res == false) {
-                array_push($toDelete, $product);
-            }
-        }
-
-        // dd($toAddAttributes, $toAdd, $toDelete);
-
-        $this->products()->attach($toAdd);
-        $this->products()->detach($toDelete);
     }
 }

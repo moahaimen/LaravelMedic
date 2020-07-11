@@ -61,7 +61,10 @@ class OrderController extends Controller
         ]);
 
         $status = $request->input('status');
-        $orders = $this->handle_order_status($orders, $status);
+        if($status != null)
+        {
+            $orders = $this->handle_order_status($orders, $status);
+        }
 
         return Response::Ok($orders->get(), 'Orders list fetched successfully');
     }
@@ -134,7 +137,7 @@ class OrderController extends Controller
             'promo_code_id' => 'nullable|numeric|exists:promo_codes,id',
         ]);
 
-        try {
+        // try {
             if (array_key_exists('products', $data)) {
                 $order->set_products($data['products']);
             }
@@ -150,9 +153,9 @@ class OrderController extends Controller
                 return Response::Error('Failed to update order ' . $order['id']);
             }
             return Response::Ok($order, 'Order resource updated successfully');
-        } catch (\Exception $e) {
-            return Response::Error('Failed to update order ' . $order['id']);
-        }
+        // } catch (\Exception $e) {
+            // return Response::Error('Failed to update order ' . $order['id']);
+        // }
     }
 
     /**
