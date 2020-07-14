@@ -91,7 +91,9 @@ class OrderController extends Controller
             'promo_code' => 'nullable|numeric|exists:promo_codes,code',
         ]);
         try {
-            $data['status_id'] = OrderStatus::make(OrderStatus::pending, auth()->id())['id'];
+            $issuer = auth()->id() ?? '<anonymous>';
+
+            $data['status_id'] = OrderStatus::make(OrderStatus::pending, $issuer)['id'];
             $data['client_id'] = ClientInformation::make($data['client'])['id'];
 
             if (array_key_exists('promo_code', $data) && $data['promo_code'] != null) {

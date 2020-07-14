@@ -103,4 +103,21 @@ class PromoCodeController extends Controller
         }
         return Response::Ok($promoCode, 'PromoCode ' . $promoCode['id'] . ' removed successfully');
     }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\PromoCode  $promoCode
+     * @return \Illuminate\Http\Response
+     */
+    public function check_status(string $code)
+    {
+        $promoCode = PromoCode::all()->firstWhere('code', '=', $code);
+        if($promoCode == null)
+        {
+            return Response::Error('Code does not match any of our records');
+        }
+        return Response::Ok($promoCode, 'PromoCode fetched successfully');
+    }
 }
+   

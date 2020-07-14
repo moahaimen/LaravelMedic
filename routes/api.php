@@ -114,19 +114,24 @@ Route::prefix('/products')->group(function () {
     Route::middleware('auth:api')->delete('/{product}', 'ProductController@delete');
 });
 
-Route::middleware('auth:api')->prefix('/orders')->group(function () {
 
-    Route::get('/', 'OrderController@get');
+Route::prefix('/orders')->group(function () {
+
     Route::post('/', 'OrderController@create');
-    Route::put('/{order}', 'OrderController@update');
-    Route::put('/{order}/status', 'OrderController@update_status');
-    // Route::delete('/{order}', 'OrderController@delete');
+
+    Route::middleware('auth:api')->get('/', 'OrderController@get');
+    Route::middleware('auth:api')->put('/{order}', 'OrderController@update');
+    Route::middleware('auth:api')->put('/{order}/status', 'OrderController@update_status');
+    // Route::middleware('auth:api')->delete('/{order}', 'OrderController@delete');
 });
 
-Route::middleware('auth:api')->prefix('/promocodes')->group(function () {
 
-    Route::get('/', 'PromoCodeController@get');
-    Route::post('/', 'PromoCodeController@create');
-    Route::put('/{promoCode}', 'PromoCodeController@update');
-    Route::delete('/{promoCode}', 'PromoCodeController@delete');
+Route::prefix('/promocodes')->group(function () {
+
+    Route::middleware('auth:api')->get('/', 'PromoCodeController@get');
+    Route::middleware('auth:api')->post('/', 'PromoCodeController@create');
+    Route::middleware('auth:api')->put('/{promoCode}', 'PromoCodeController@update');
+    Route::middleware('auth:api')->delete('/{promoCode}', 'PromoCodeController@delete');
+    Route::get('/{code}', 'PromoCodeController@check_status');
 });
+
