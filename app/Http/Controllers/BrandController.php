@@ -52,7 +52,7 @@ class BrandController extends Controller
     public function update(Request $request, Brand $brand)
     {
         $data = $request->validate([
-            'name' => 'nullable|min:3|unique:brands,name',
+            'name' => 'nullable|min:3|unique:brands,name,' . $brand['id'],
             'description' => 'nullable|min:3',
             'attachment_id' => 'nullable|exists:attachments,id'
         ]);
