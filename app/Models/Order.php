@@ -57,7 +57,7 @@ class Order extends Model
                     'order_id' => $this->id,
                     'product_id' => $product_id,
                     'quantity' => $element['quantity'],
-                    'price_id' => $element['price']['id'],
+                    'price_id' => Product::find($product_id)->price()->get()[0]['id'],
                 ]);
             }
         }

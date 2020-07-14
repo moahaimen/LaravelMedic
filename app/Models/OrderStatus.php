@@ -19,7 +19,7 @@ class OrderStatus extends Model
     }
 
 
-    public static function make(int $title, string $changed_by, OrderStatus $current = null): OrderStatus
+    public static function make(int $title, $changed_by, OrderStatus $current = null): OrderStatus
     {
         $data = [
             'title' => $title,
