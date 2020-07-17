@@ -4,7 +4,7 @@ use App\Models\User;
 use App\Models\UserStatus;
 use Illuminate\Database\Seeder;
 
-class UserSeeder extends Seeder
+class Users extends Seeder
 {
     /**
      * Run the database seeds.
@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
             'user_name' => 'nazeer',
             'first_name' => 'Nazeer',
             'last_name' => 'Allahham',
-            'email' => 'nazeeer.allahham@outlook.com',
+            'email' => 'nazeer.allahham@outlook.com',
             'password' => bcrypt('Aa123$56'),
             'role_id' => 1,
             'status_id' => UserStatus::make(UserStatus::active, '<seeder>')['id'],
