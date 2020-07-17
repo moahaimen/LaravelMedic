@@ -177,9 +177,6 @@ class OrderController extends Controller
         if ($status == OrderStatus::deliveried) {
             return Response::Error('Order status cannot be changed since it is deliveried');
         }
-        if ($status == OrderStatus::shipping) {
-            return Response::Error('Order status cannot be changed since it is shipped');
-        }
 
         $data = $request->validate([
             'status' => 'required|numeric|gt:' . $status,

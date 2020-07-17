@@ -27,17 +27,21 @@ class AuthController extends Controller
         $data['password'] = bcrypt($data['password']);
         $data['status_id'] = UserStatus::make(UserStatus::active, '<onRegister>')['id'];
 
-        if ($data == null) {
-            return Response::Error("User data undefined");
-        }
+        try {
+            if ($data == null) {
+                return Response::Error("User data undefined");
+            }
 
-        $user = User::create($data);
+            $user = User::create($data);
 
-        if ($user == null) {
+            if ($user == null) {
+                return Response::Error("User creation failed");
+            }
+
+            return $this->composeResponse($user);
+        } catch (\Throwable $th) {
             return Response::Error("User creation failed");
         }
-
-        return $this->composeResponse($user);
     }
 
     /**
@@ -83,7 +87,7 @@ class AuthController extends Controller
      */
     public function logout()
     {
-        auth()->logout();
+        // auth()->logout();    
         return Response::Ok(null, 'User logged out successfully');
     }
 
