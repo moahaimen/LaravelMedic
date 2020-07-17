@@ -80,12 +80,16 @@ class BrandController extends Controller
     public function delete(Brand $brand)
     {
         try {
-            // 1- Delete all attachments related to this brand.
-            $brand->delete_attachment();
+            // 1- Save attachment in temp var.
+            $attachment = $brand->attachment();
             // 2- Delete entity's record
             if (!$brand->delete()) {
                 return Response::Error('Failed to delete brand ' . $brand['id']);
             }
+            if (!$attachment->delete()) {
+                return Response::Error('Failed to delete brand ' . $brand['id']);
+            }
+
             return Response::Ok($brand, 'Brand ' . $brand['id'] . ' removed successfully');
         } catch (\Throwable $th) {
             return Response::Error('Failed to delete brand ' . $brand['id']);

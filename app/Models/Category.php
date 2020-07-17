@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
     protected $fillable = [
-        'name',  'description', 'code'
+        'name',  'description', 'icon'
+    ];
+
+    protected $casts = [
+        'icon' => 'int',
     ];
 }

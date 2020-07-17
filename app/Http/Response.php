@@ -23,21 +23,24 @@ class Response
 
     public static function Error(string $message = 'Failed.'): HttpResponse
     {
-        return response()->json('', 400, [
+        $arr = [];
+        return response()->json($arr, 400, [
             'Message' => $message
         ]);
     }
 
     public static function UnAuthenticated(string $message = 'Un authenticated request.'): HttpResponse
     {
-        return response()->json(null, 401, [
+        $arr = [];
+        return response()->json($arr, 401, [
             'Message' => $message
         ]);
     }
 
     public static function UnAuthorized(string $message = 'Un authorized to operate this request.'): HttpResponse
     {
-        return response()->json(null, 403, [
+        $arr = [];
+        return response()->json($arr, 403, [
             'Message' => $message
         ]);
     }

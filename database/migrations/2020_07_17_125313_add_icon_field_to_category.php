@@ -6,17 +6,12 @@ use Illuminate\Support\Facades\Schema;
 
 class AddIconFieldToCategory extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::table('categories', function (Blueprint $table) {
             // Code is encoded in Hex (Material Icons)
             // But we sotre it in int decimal 10-base 
-            $table->integer('code')->nullable(false)->default(59105);
+            $table->integer('icon')->nullable(false)->default(58270);
         });
     }
 
@@ -28,7 +23,7 @@ class AddIconFieldToCategory extends Migration
     public function down()
     {
         Schema::table('categories', function (Blueprint $table) {
-            $table->dropColumn('code');
+            $table->dropColumn('icon');
         });
     }
 }

@@ -48,11 +48,11 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $data = $request->validate([
-            'email' => 'required',
-            'password' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:8',
         ]);
-        try {
 
+        try {
             $data['request'] = $request;
 
             if ($data == null || ($user = $this->attempt($data)) == null) {

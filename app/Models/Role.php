@@ -18,6 +18,6 @@ class Role extends Model
 
     public function delete_permissions()
     {
-        return RolePermission::all()->where('role_id', '=', $this->id)->delete();
+        return RolePermission::where('role_id', '=', $this->id)->delete();
     }
 }

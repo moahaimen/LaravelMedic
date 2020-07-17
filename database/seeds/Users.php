@@ -1,7 +1,5 @@
 <?php
 
-namespace App\DB\Seeds;
-
 use App\Models\User;
 use App\Models\UserStatus;
 use Illuminate\Database\Seeder;
