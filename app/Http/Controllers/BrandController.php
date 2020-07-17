@@ -34,12 +34,16 @@ class BrandController extends Controller
             'attachment_id' => 'required|exists:attachments,id'
         ]);
 
-        $brand = Brand::create($data);
+        try {
+            $brand = Brand::create($data);
 
-        if ($brand == null) {
+            if ($brand == null) {
+                Response::Error('Failed to create new brand');
+            }
+            return Response::Ok($brand, 'Brand resource created successfully');
+        } catch (\Throwable $th) {
             Response::Error('Failed to create new brand');
         }
-        return Response::Ok($brand, 'Brand resource created successfully');
     }
 
     /**
@@ -57,11 +61,14 @@ class BrandController extends Controller
             'attachment_id' => 'nullable|exists:attachments,id'
         ]);
 
-        if (!$brand->update($data)) {
-
+        try {
+            if (!$brand->update($data)) {
+                return Response::Error('Failed to update brand ' . $brand['id']);
+            }
+            return Response::Ok($brand, 'Brand resource updated successfully');
+        } catch (\Throwable $th) {
             return Response::Error('Failed to update brand ' . $brand['id']);
         }
-        return Response::Ok($brand, 'Brand resource updated successfully');
     }
 
     /**
@@ -72,9 +79,16 @@ class BrandController extends Controller
      */
     public function delete(Brand $brand)
     {
-        if (!$brand->delete()) {
+        try {
+            // 1- Delete all attachments related to this brand.
+            $brand->delete_attachment();
+            // 2- Delete entity's record
+            if (!$brand->delete()) {
+                return Response::Error('Failed to delete brand ' . $brand['id']);
+            }
+            return Response::Ok($brand, 'Brand ' . $brand['id'] . ' removed successfully');
+        } catch (\Throwable $th) {
             return Response::Error('Failed to delete brand ' . $brand['id']);
         }
-        return Response::Ok($brand, 'Brand ' . $brand['id'] . ' removed successfully');
     }
 }

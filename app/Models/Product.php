@@ -32,7 +32,7 @@ class Product extends Model
 
     public function set_attachments(array $data): void
     {
-        $attachments = array_column($this->attachments()->get()->toArray(), 'attachment_id');
+        $attachments = array_column($this->attachments()->get()->toArray(), 'id');
 
         $toAdd = [];
         $toDelete = [];
@@ -55,5 +55,19 @@ class Product extends Model
 
         $this->attachments()->attach($toAdd);
         $this->attachments()->detach($toDelete);
+    }
+
+    public function delete_attachments()
+    {
+        $attachments = $this->attachments();
+        $ids = array_column($attachments->get()->toArray(), 'id');
+
+        $attachments->detach();
+        return Attachment::whereIn('id', $ids)->delete();
+    }
+
+    public function order_products()
+    {
+        return $this->hasMany(OrderProduct::class, 'product_id');
     }
 }

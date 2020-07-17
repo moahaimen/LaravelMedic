@@ -110,9 +110,16 @@ class ProductController extends Controller
      */
     public function delete(Product $product)
     {
-        if (!$product->delete()) {
-            return Response::Error('Failed to delete product ' . $product['id']);
+        try {
+            // 1- Delete attachments related to
+            $product->delete_attachments();
+            // 2- Delete the entity
+            if (!$product->delete()) {
+                return Response::Error('Failed to delete product ' . $product['id']);
+            }
+            return Response::Ok($product, 'Product ' . $product['id'] . ' removed successfully');
+        } catch (\Throwable $th) {
+            return Response::Error('Failed to delete product ' . $product['id'] . ', Product already ordered and cannot be removed');
         }
-        return Response::Ok($product, 'Product ' . $product['id'] . ' removed successfully');
     }
 }

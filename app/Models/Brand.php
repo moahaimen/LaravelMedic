@@ -14,4 +14,10 @@ class Brand extends Model
     {
         return $this->belongsTo(Attachment::class, 'attachment_id');
     }
+
+    public function delete_attachment()
+    {
+        $attachment = $this->attachment()->get();
+        $attachment->delete();
+    }
 }

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Response;
 use App\Models\User;
 use App\Models\UserStatus;
-use AuthException;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
@@ -85,7 +84,6 @@ class AuthController extends Controller
     public function logout()
     {
         auth()->logout();
-
         return Response::Ok(null, 'User logged out successfully');
     }
 

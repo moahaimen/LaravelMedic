@@ -51,22 +51,25 @@ class OrderController extends Controller
      */
     public function get(Request $request)
     {
-        $orders = Order::with([
-            'promo_code',
-            'status',
-            'client',
-            'order_products',
-            'order_products.price',
-            'order_products.product',
-        ]);
+        try {
+            $orders = Order::with([
+                'promo_code',
+                'status',
+                'client',
+                'order_products',
+                'order_products.price',
+                'order_products.product',
+            ]);
 
-        $status = $request->input('status');
-        if($status != null)
-        {
-            $orders = $this->handle_order_status($orders, $status);
+            $status = $request->input('status');
+            if ($status != null) {
+                $orders = $this->handle_order_status($orders, $status);
+            }
+
+            return Response::Ok($orders->get(), 'Orders list fetched successfully');
+        } catch (\Throwable $th) {
+            return Response::Error('Failed to fetch orders list');
         }
-
-        return Response::Ok($orders->get(), 'Orders list fetched successfully');
     }
 
     /**
@@ -137,7 +140,7 @@ class OrderController extends Controller
             'promo_code_id' => 'nullable|numeric|exists:promo_codes,id',
         ]);
 
-        // try {
+        try {
             if (array_key_exists('products', $data)) {
                 $order->set_products($data['products']);
             }
@@ -153,9 +156,9 @@ class OrderController extends Controller
                 return Response::Error('Failed to update order ' . $order['id']);
             }
             return Response::Ok($order, 'Order resource updated successfully');
-        // } catch (\Exception $e) {
-            // return Response::Error('Failed to update order ' . $order['id']);
-        // }
+        } catch (\Exception $e) {
+            return Response::Error('Failed to update order ' . $order['id']);
+        }
     }
 
     /**
@@ -182,10 +185,14 @@ class OrderController extends Controller
             'status' => 'required|numeric|gt:' . $status,
         ]);
 
-        $order['status_id'] = OrderStatus::make($data['status'], auth()->id())['id'];
-        $order->save();
+        try {
+            $order['status_id'] = OrderStatus::make($data['status'], auth()->id())['id'];
+            $order->save();
 
-        return Response::Ok($order, 'Order\'s status updated successfully');
+            return Response::Ok($order, 'Order\'s status updated successfully');
+        } catch (\Throwable $th) {
+            return Response::Error('Failed to update order status');
+        }
     }
 
     /**

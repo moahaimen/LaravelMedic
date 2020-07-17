@@ -15,4 +15,9 @@ class Role extends Model
     {
         return $this->belongsToMany(Permission::class, RolePermission::class, 'role_id');
     }
+
+    public function delete_permissions()
+    {
+        return RolePermission::all()->where('role_id', '=', $this->id)->delete();
+    }
 }

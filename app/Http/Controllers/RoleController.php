@@ -32,13 +32,16 @@ class RoleController extends Controller
             'name' => 'required|string|min:3|unique:roles,name',
             'description' => 'required|string|min:3',
         ]);
+        try {
+            $role = Role::create($data);
 
-        $role = Role::create($data);
-
-        if ($role == null) {
+            if ($role == null) {
+                Response::Error('Failed to create new role');
+            }
+            return Response::Ok($role, 'Role resource created successfully');
+        } catch (\Throwable $th) {
             Response::Error('Failed to create new role');
         }
-        return Response::Ok($role, 'Role resource created successfully');
     }
 
     /**
@@ -54,12 +57,16 @@ class RoleController extends Controller
             'name' => 'nullable|string|min:3|unique:roles,name,' . $role['id'],
             'description' => 'nullable|string|min:3',
         ]);
+        try {
 
-        if (!$role->update($data)) {
+            if (!$role->update($data)) {
 
+                return Response::Error('Failed to update role ' . $role['id']);
+            }
+            return Response::Ok($role, 'Role resource updated successfully');
+        } catch (\Throwable $th) {
             return Response::Error('Failed to update role ' . $role['id']);
         }
-        return Response::Ok($role, 'Role resource updated successfully');
     }
 
     /**
@@ -70,9 +77,16 @@ class RoleController extends Controller
      */
     public function delete(Role $role)
     {
-        if (!$role->delete()) {
+        try {
+            // 1- Delete assocations with permissions
+            $role->delete_permissions();
+            // 2- Delete entity
+            if (!$role->delete()) {
+                return Response::Error('Failed to delete role ' . $role['id']);
+            }
+            return Response::Ok($role, 'Role ' . $role['id'] . ' removed successfully');
+        } catch (\Throwable $th) {
             return Response::Error('Failed to delete role ' . $role['id']);
         }
-        return Response::Ok($role, 'Role ' . $role['id'] . ' removed successfully');
     }
 }

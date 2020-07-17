@@ -14,9 +14,9 @@
     <base href="/" />
 
     <!--     Fonts and icons     -->
-    <link href="/assets/css/montserrat.font.css" rel="stylesheet" />
+    <!-- <link href="/assets/css/montserrat.font.css" rel="stylesheet" /> -->
     <link href="/assets/css/font-awesome.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.4bd0cdaf1106f0f74bdb.css">
+    <link rel="stylesheet" href="styles.c90e90a8a4410a41ba46.css">
 </head>
 
 <body>
@@ -25,9 +25,9 @@
             <div class="loader">Loading</div>
         </div>
     </app-root>
-    <script src="runtime.a28fa9c58e3e587f1bc1.js" defer></script>
+    <script src="runtime.6b83c5f6939906b00c65.js" defer></script>
     <script src="polyfills.c43b3fd34441142612c7.js" defer></script>
-    <script src="main.20408a07f1b200cee476.js" defer></script>
+    <script src="main.0554c08d41da75001483.js" defer></script>
 </body>
 
 </html>

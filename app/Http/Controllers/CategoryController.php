@@ -31,14 +31,19 @@ class CategoryController extends Controller
         $data = $request->validate([
             'name' => 'required|string|min:3|unique:categories,name',
             'description' => 'required|string|min:3',
+            'icon' => 'required|numeric|',
         ]);
 
-        $category = Category::create($data);
+        try {
+            $category = Category::create($data);
 
-        if ($category == null) {
+            if ($category == null) {
+                Response::Error('Failed to create new category');
+            }
+            return Response::Ok($category, 'Category resource created successfully');
+        } catch (\Throwable $th) {
             Response::Error('Failed to create new category');
         }
-        return Response::Ok($category, 'Category resource created successfully');
     }
 
     /**
@@ -53,13 +58,17 @@ class CategoryController extends Controller
         $data = $request->validate([
             'name' => 'nullable|string|min:3|unique:categories,name,' . $category['id'],
             'description' => 'nullable|string|min:3',
+            'icon' => 'nullable|numeric',
         ]);
 
-        if (!$category->update($data)) {
-
+        try {
+            if (!$category->update($data)) {
+                return Response::Error('Failed to update category ' . $category['id']);
+            }
+            return Response::Ok($category, 'Category resource updated successfully');
+        } catch (\Throwable $th) {
             return Response::Error('Failed to update category ' . $category['id']);
         }
-        return Response::Ok($category, 'Category resource updated successfully');
     }
 
     /**
@@ -70,9 +79,13 @@ class CategoryController extends Controller
      */
     public function delete(Category $category)
     {
-        if (!$category->delete()) {
+        try {
+            if (!$category->delete()) {
+                return Response::Error('Failed to delete category ' . $category['id']);
+            }
+            return Response::Ok($category, 'Category ' . $category['id'] . ' removed successfully');
+        } catch (\Throwable $th) {
             return Response::Error('Failed to delete category ' . $category['id']);
         }
-        return Response::Ok($category, 'Category ' . $category['id'] . ' removed successfully');
     }
 }

@@ -3,3 +3,16 @@
 .color-active i {
     color: #e95e38 !important;
 }
+
+.modal-body.multi-select {
+    .select-container {
+        height: 70vh !important;
+        max-height: 70vh !important;
+        min-height: 70vh !important;
+        overflow: auto !important;
+    }
+}
+
+html *:not(i.nc-icon|span.nc-icon|i.fa|span.fa) {
+    font-family: 'Candara' !important;
+}

@@ -33,12 +33,16 @@ class PermissionController extends Controller
             'description' => 'required|string|min:3',
         ]);
 
-        $permission = Permission::create($data);
+        try {
+            $permission = Permission::create($data);
 
-        if ($permission == null) {
+            if ($permission == null) {
+                Response::Error('Failed to create new permission');
+            }
+            return Response::Ok($permission, 'Permission resource created successfully');
+        } catch (\Throwable $th) {
             Response::Error('Failed to create new permission');
         }
-        return Response::Ok($permission, 'Permission resource created successfully');
     }
 
     /**
@@ -55,11 +59,14 @@ class PermissionController extends Controller
             'description' => 'nullable|string|min:3',
         ]);
 
-        if (!$permission->update($data)) {
-
+        try {
+            if (!$permission->update($data)) {
+                return Response::Error('Failed to update permission ' . $permission['id']);
+            }
+            return Response::Ok($permission, 'Permission resource updated successfully');
+        } catch (\Throwable $th) {
             return Response::Error('Failed to update permission ' . $permission['id']);
         }
-        return Response::Ok($permission, 'Permission resource updated successfully');
     }
 
     /**
@@ -70,9 +77,16 @@ class PermissionController extends Controller
      */
     public function delete(Permission $permission)
     {
-        if (!$permission->delete()) {
+        try {
+            // 1- Delete assocaiation with roles
+            $permission->delete_roles();
+            // 2- Delete the entity
+            if (!$permission->delete()) {
+                return Response::Error('Failed to delete permission ' . $permission['id']);
+            }
+            return Response::Ok($permission, 'Permission ' . $permission['id'] . ' removed successfully');
+        } catch (\Throwable $th) {
             return Response::Error('Failed to delete permission ' . $permission['id']);
         }
-        return Response::Ok($permission, 'Permission ' . $permission['id'] . ' removed successfully');
     }
 }
