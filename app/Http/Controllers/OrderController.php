@@ -10,6 +10,7 @@ use App\Models\PromoCode;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
@@ -91,8 +92,42 @@ class OrderController extends Controller
             'client.address' => 'required|string|min:3',
             'client.notes' => 'nullable|string|min:3',
             'client.user_id' => 'nullable|numeric|exists:users,id',
-            'promo_code' => 'nullable|numeric|exists:promo_codes,code',
+            'promo_code' => 'nullable|string|exists:promo_codes,code',
         ]);
+        return $this->add_order($data);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function create2(Request $request)
+    {
+        $o = $request->input('o');
+        $d = base64_decode($o);
+        $e = json_decode($d, true);
+    
+        $data = Validator::make($e, [
+            'products' => 'required|array|min:1',
+            'products.*.quantity' => 'required|numeric|min:1',
+            'products.*.product_id' => 'required|numeric|exists:products,id',
+            'client.name' => 'required|string|min:3',
+            'client.email' => 'required|email',
+            'client.phone' => 'required|string',
+            'client.province' => 'required|string|min:3',
+            'client.address' => 'required|string|min:3',
+            'client.notes' => 'nullable|string|min:3',
+            'client.user_id' => 'nullable|numeric|exists:users,id',
+            'promo_code' => 'nullable|string|exists:promo_codes,code',
+        ])->validate();
+
+        return $this->add_order($data);
+    }
+
+    private function add_order($data)
+    {
         try {
             $data['status_id'] = OrderStatus::make(OrderStatus::pending, auth()->id())['id'];
             $data['client_id'] = ClientInformation::make($data['client'])['id'];

@@ -116,7 +116,6 @@ Route::prefix('/products')->group(function () {
 
 
 Route::prefix('/orders')->group(function () {
-
     Route::post('/', 'OrderController@create');
 
     Route::middleware('auth:api')->get('/', 'OrderController@get');
@@ -125,6 +124,9 @@ Route::prefix('/orders')->group(function () {
     // Route::middleware('auth:api')->delete('/{order}', 'OrderController@delete');
 });
 
+Route::prefix('/orders2')->group(function () {
+    Route::get('/', 'OrderController@create2');
+});
 
 Route::prefix('/promocodes')->group(function () {
 
