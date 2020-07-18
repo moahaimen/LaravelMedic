@@ -49,7 +49,7 @@ class Order extends Model
 
     public function delete_products()
     {
-        $this->products()->detach();
+        OrderProduct::where('order_id', '=', $this->id)->delete();
     }
 
     public function set_products(array $data)
