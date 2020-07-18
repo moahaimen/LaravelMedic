@@ -121,7 +121,7 @@ Route::prefix('/orders')->group(function () {
     Route::middleware('auth:api')->get('/', 'OrderController@get');
     Route::middleware('auth:api')->put('/{order}', 'OrderController@update');
     Route::middleware('auth:api')->put('/{order}/status', 'OrderController@update_status');
-    // Route::middleware('auth:api')->delete('/{order}', 'OrderController@delete');
+    Route::middleware('auth:api')->delete('/{order}', 'OrderController@delete');
 });
 
 Route::prefix('/orders2')->group(function () {
@@ -136,4 +136,3 @@ Route::prefix('/promocodes')->group(function () {
     Route::middleware('auth:api')->delete('/{promoCode}', 'PromoCodeController@delete');
     Route::get('/{code}', 'PromoCodeController@check_status');
 });
-

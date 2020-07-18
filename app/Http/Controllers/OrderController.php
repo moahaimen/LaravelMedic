@@ -108,7 +108,7 @@ class OrderController extends Controller
         $o = $request->input('o');
         $d = base64_decode($o);
         $e = json_decode($d, true);
-    
+
         $data = Validator::make($e, [
             'products' => 'required|array|min:1',
             'products.*.quantity' => 'required|numeric|min:1',
@@ -237,15 +237,25 @@ class OrderController extends Controller
     {
         DB::beginTransaction();
         try {
-            DB::table('order_products')
-                ->where('order_id', '=', $order['id'])
-                ->delete();
+            // 1- Delete client related to
+            if (!$order->delete_client()) {
+                return Response::Error('Failed to delete order ' . $order['id'] . ' (1)');
+            }
 
-            DB::table('client_information')
-                ->where('id', $order['client_id'])
-                ->delete();
+            // 2- Delete statuses related to
+            if (!$order->delete_statuses()) {
+                return Response::Error('Failed to delete order ' . $order['id'] . ' (2)');
+            }
 
-            DB::table('orders')->delete($order['id']);
+            // 3- Delete products related to
+            if (!$order->delete_products()) {
+                return Response::Error('Failed to delete order ' . $order['id'] . ' (3)');
+            }
+
+            // 4- Delete the entity
+            if (!$order->delete()) {
+                return Response::Error('Failed to delete order ' . $order['id'] . ' (4)');
+            }
             return Response::Ok($order, 'Order ' . $order['id'] . ' removed successfully');
         } catch (\Exception $e) {
             DB::rollBack();

@@ -17,9 +17,19 @@ class Order extends Model
         return $this->belongsTo(OrderStatus::class);
     }
 
+    public function delete_statuses()
+    {
+
+    }
+
     public function client()
     {
         return $this->belongsTo(ClientInformation::class, 'client_id', 'id');
+    }
+
+    public function delete_client()
+    {
+        return $this->client()->delete();
     }
 
     public function promo_code()
@@ -35,6 +45,11 @@ class Order extends Model
     public function order_products()
     {
         return $this->hasMany(OrderProduct::class, 'order_id');
+    }
+
+    public function delete_products()
+    {
+        $this->products()->detach();
     }
 
     public function set_products(array $data)
