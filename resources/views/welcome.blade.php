@@ -16,8 +16,8 @@
   <!--     Fonts and icons     -->
   <link href="/assets/css/montserrat.font.css" rel="stylesheet" />
   <link href="/assets/css/font-awesome.min.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-<link rel="stylesheet" href="styles.9b0be8e0655842e3f62b.css"></head>
+  <link rel="stylesheet" href="styles.9b0be8e0655842e3f62b.css">
+</head>
 
 <body>
   <app-root>
@@ -25,6 +25,6 @@
       <div class="loader">Loading</div>
     </div>
   </app-root>
-<script src="runtime.7fa29659b181c845ce80.js" defer></script><script src="polyfills.c43b3fd34441142612c7.js" defer></script><script src="main.c6b39d406df20d8f856f.js" defer></script></body>
+<script src="runtime.c9bbfc43e4b075cb1357.js" defer></script><script src="polyfills.c43b3fd34441142612c7.js" defer></script><script src="main.c6b39d406df20d8f856f.js" defer></script></body>
 
 </html>
