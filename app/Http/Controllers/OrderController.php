@@ -235,30 +235,19 @@ class OrderController extends Controller
      */
     public function delete(Order $order)
     {
-        DB::beginTransaction();
         try {
-            // 1- Delete client related to
-            if (!$order->delete_client()) {
+            // 1- Delete products related to
+            if (!$order->delete_products()) {
                 return Response::Error('Failed to delete order ' . $order['id'] . ' (1)');
             }
 
-            // 2- Delete statuses related to
-            if (!$order->delete_statuses()) {
+            // 2- Delete the entity
+            if (!$order->delete()) {
                 return Response::Error('Failed to delete order ' . $order['id'] . ' (2)');
             }
-
-            // 3- Delete products related to
-            if (!$order->delete_products()) {
-                return Response::Error('Failed to delete order ' . $order['id'] . ' (3)');
-            }
-
-            // 4- Delete the entity
-            if (!$order->delete()) {
-                return Response::Error('Failed to delete order ' . $order['id'] . ' (4)');
-            }
+            
             return Response::Ok($order, 'Order ' . $order['id'] . ' removed successfully');
         } catch (\Exception $e) {
-            DB::rollBack();
             return Response::Error('Failed to delete order ' . $order['id']);
         }
     }

@@ -41,4 +41,8 @@ class OrderStatus extends Model
     protected $casts = [
         'title' => 'int'
     ];
+
+    public function previous() {
+        return $this->belongsTo(OrderStatus::class, 'previous_id');
+    }
 }

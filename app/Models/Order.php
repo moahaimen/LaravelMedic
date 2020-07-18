@@ -19,7 +19,18 @@ class Order extends Model
 
     public function delete_statuses()
     {
+        $current = $this->status()->get()[0];
+        dd($current);
 
+        while($current != null) {
+            $previous = $current->previous();
+            dd($previous);
+            $current = $previous;
+            if(!$current->delete()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public function client()
@@ -29,7 +40,7 @@ class Order extends Model
 
     public function delete_client()
     {
-        return $this->client()->delete();
+        // return ClientInformation::where('id', '=', $this->client_id)->delete();
     }
 
     public function promo_code()
@@ -49,7 +60,7 @@ class Order extends Model
 
     public function delete_products()
     {
-        OrderProduct::where('order_id', '=', $this->id)->delete();
+        return OrderProduct::where('order_id', '=', $this->id)->delete();
     }
 
     public function set_products(array $data)
