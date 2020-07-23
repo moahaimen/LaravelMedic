@@ -26,6 +26,8 @@ Route::prefix('/auth')->group(function () {
         ->group(function () {
             Route::get('/', 'AuthController@me');
 
+            Route::post('/fcmToken', 'AuthController@change_fcm_token');
+
             Route::prefix('/orders')->group(function () {
                 Route::get('/', 'OrderController@get');
                 Route::post('/', 'OrderController@create');
@@ -135,4 +137,9 @@ Route::prefix('/promocodes')->group(function () {
     Route::middleware('auth:api')->put('/{promoCode}', 'PromoCodeController@update');
     Route::middleware('auth:api')->delete('/{promoCode}', 'PromoCodeController@delete');
     Route::get('/{code}', 'PromoCodeController@check_status');
+});
+
+Route::prefix('/notifications')->group(function () {
+
+    Route::middleware('auth:api')->post('/', 'NotificationController@push');
 });

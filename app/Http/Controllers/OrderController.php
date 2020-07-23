@@ -142,9 +142,16 @@ class OrderController extends Controller
             if ($order == null) {
                 Response::Error('Failed to create new order');
             }
+
+            NotificationController::notify_all_admins([
+                "title" => "New Order Submission",
+                "body" => "Client '" . $data['client']['name'] . "' submitted new order (" . $order['id'] . ")",
+                "payload" => $order['id'],
+            ]);
+
             return Response::Ok($order, 'Order resource created successfully');
         } catch (\Exception $e) {
-            Response::Error('Failed to create new order');
+            return Response::Error('Failed to create new order');
         }
     }
 
@@ -245,7 +252,7 @@ class OrderController extends Controller
             if (!$order->delete()) {
                 return Response::Error('Failed to delete order ' . $order['id'] . ' (2)');
             }
-            
+
             return Response::Ok($order, 'Order ' . $order['id'] . ' removed successfully');
         } catch (\Exception $e) {
             return Response::Error('Failed to delete order ' . $order['id']);

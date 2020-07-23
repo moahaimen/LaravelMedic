@@ -91,6 +91,21 @@ class AuthController extends Controller
         return Response::Ok(null, 'User logged out successfully');
     }
 
+    public function change_fcm_token(Request $request)
+    {
+        $data = $request->validate([
+            'token' => 'required',
+        ]);
+        $user = auth()->user();
+
+        if ($user instanceof User) {
+            $user->update([
+                'fcm_token' => $data['token']
+            ]);
+        }
+        return Response::Ok($user, 'User Fcm token saved successfully');
+    }
+
     /**
      * Get the token array structure.
      *

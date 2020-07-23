@@ -38,7 +38,7 @@ class ProductController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|min:3|unique:products,name',
-            'description' => 'required|string|min:3',
+            'description' => 'required|max:750',
             'brand_id' => 'required|numeric|exists:brands,id',
             'category_id' => 'required|numeric|exists:categories,id',
             'is_main' => 'required|boolean',
@@ -46,6 +46,7 @@ class ProductController extends Controller
             'attachments' => 'required|array|min:1|max:4',
             'attachments.*' => 'required|numeric|exists:attachments,id',
         ]);
+
         try {
             $data['price_id'] = Price::make($data['price'])['id'];
 
@@ -57,7 +58,8 @@ class ProductController extends Controller
             }
             return Response::Ok($product, 'Product resource created successfully');
         } catch (\Exception $e) {
-            Response::Error('Failed to create new product');
+            throw $e;
+            // Response::Error('Failed to create new product');
         }
     }
 
