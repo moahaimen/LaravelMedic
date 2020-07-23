@@ -8,8 +8,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
   <meta name="viewport" content="width=device-width" />
-  <meta name="author" content="Nazeer Allahham">
-  <meta name="description" content="Medical products store">
+  <meta name="author" content="Nazeer Allahham" />
+  <meta name="description" content="Medical products store" />
 
   <title>Drug Store 2020</title>
 
@@ -22,7 +22,7 @@
   <link href="/assets/css/font-awesome.min.css" rel="stylesheet" />
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#1976d2" />
-  <link rel="stylesheet" href="styles.3189197679e5fadc4e34.css" />
+  <link rel="stylesheet" href="styles.9b0be8e0655842e3f62b.css" />
 </head>
 
 <body>
@@ -31,10 +31,11 @@
       <div class="loader">Loading</div>
     </div>
   </app-root>
-  <noscript>Please enable JavaScript to continue using this application.</noscript>
-  <script src="runtime.3f3dc3e1a90fb179c44d.js" defer></script>
-  <script src="polyfills.d30e9bd397dabb8cd269.js" defer></script>
-  <script src="main.d20fba9c50a6361925cb.js" defer></script>
+  <noscript>
+    Please enable JavaScript to continue using this application.</noscript>
+  <script src="runtime.6d9c493c29dc518f438f.js" defer></script>
+  <script src="polyfills.c43b3fd34441142612c7.js" defer></script>
+  <script src="main.f7d541a9b14c624cdbf8.js" defer></script>
 </body>
 
 </html>

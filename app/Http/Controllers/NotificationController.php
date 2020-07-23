@@ -25,7 +25,7 @@ class NotificationController extends Controller
         try {
 
             $sender_id = "";
-            $receiver_id = $data['receiver_id'];
+            $receiver_id = $data['receiver_id'] ?? '';
 
             $firebase = new Firebase();
             $push     = new Push();
@@ -76,7 +76,7 @@ class NotificationController extends Controller
         foreach ($tokens as $i => $token) {
             $data['push_type'] = 'individual';
             $data['receiver_id'] = $token;
-            
+
             NotificationController::prepare_and_send($data);
         }
         return true;
