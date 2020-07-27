@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Response;
-use App\Models\Brand;
-use App\Models\Category;
 use App\Models\Price;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -37,8 +35,10 @@ class ProductController extends Controller
     public function create(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string|min:3|unique:products,name',
-            'description' => 'required|max:750',
+            'en_name' => 'required|string|min:3|unique:products,en_name',
+            'ar_name' => 'required|string|min:3|unique:products,ar_name',
+            'en_description' => 'required|max:750',
+            'ar_description' => 'required|max:750',
             'brand_id' => 'required|numeric|exists:brands,id',
             'category_id' => 'required|numeric|exists:categories,id',
             'is_main' => 'required|boolean',
@@ -58,8 +58,8 @@ class ProductController extends Controller
             }
             return Response::Ok($product, 'Product resource created successfully');
         } catch (\Exception $e) {
-            throw $e;
-            // Response::Error('Failed to create new product');
+            // throw $e;
+            Response::Error('Failed to create new product');
         }
     }
 
@@ -73,8 +73,10 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $data = $request->validate([
-            'name' => 'nullable|string|min:3|unique:products,name,' . $product['id'],
-            'description' => 'required|string|min:3',
+            'en_name' => 'nullable|string|min:3|unique:products,en_name,' . $product['id'],
+            'ar_name' => 'nullable|string|min:3|unique:products,ar_name,' . $product['id'],
+            'en_description' => 'required|string|min:3',
+            'ar_description' => 'required|string|min:3',
             'brand_id' => 'nullable|numeric|exists:brands,id',
             'category_id' => 'nullable|numeric|exists:categories,id',
             'is_main' => 'nullable|boolean',
@@ -99,8 +101,8 @@ class ProductController extends Controller
             }
             return Response::Ok($product, 'Product resource updated successfully');
         } catch (\Exception $e) {
-            // return Response::Error('Failed to update product xx ' . $product['id']);
-            throw $e;
+            // throw $e;
+            return Response::Error('Failed to update product xx ' . $product['id']);
         }
     }
 
@@ -121,6 +123,7 @@ class ProductController extends Controller
             }
             return Response::Ok($product, 'Product ' . $product['id'] . ' removed successfully');
         } catch (\Throwable $th) {
+            // throw $th
             return Response::Error('Failed to delete product ' . $product['id'] . ', Product already ordered and cannot be removed');
         }
     }

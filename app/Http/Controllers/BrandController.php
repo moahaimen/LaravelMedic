@@ -29,8 +29,10 @@ class BrandController extends Controller
     public function create(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|min:3|unique:brands,name',
-            'description' => 'required|min:3',
+            'en_name' => 'required|min:3|unique:brands,en_name',
+            'en_description' => 'required|min:3',
+            'ar_name' => 'required|min:3|unique:brands,ar_name',
+            'ar_description' => 'required|min:3',
             'attachment_id' => 'required|exists:attachments,id'
         ]);
 
@@ -56,8 +58,10 @@ class BrandController extends Controller
     public function update(Request $request, Brand $brand)
     {
         $data = $request->validate([
-            'name' => 'nullable|min:3|unique:brands,name,' . $brand['id'],
-            'description' => 'nullable|min:3',
+            'en_name' => 'nullable|min:3|unique:brands,en_name,' . $brand['id'],
+            'en_description' => 'nullable|min:3',
+            'ar_name' => 'nullable|min:3|unique:brands,ar_name,' . $brand['id'],
+            'ar_description' => 'nullable|min:3',
             'attachment_id' => 'nullable|exists:attachments,id'
         ]);
 
@@ -80,7 +84,7 @@ class BrandController extends Controller
     public function delete(Brand $brand)
     {
         try {
-            // 1- Save attachment in temp var.
+            // 1- Delete the attachment
             $attachment = $brand->attachment();
             // 2- Delete entity's record
             if (!$brand->delete()) {

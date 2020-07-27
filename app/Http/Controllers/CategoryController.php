@@ -29,8 +29,10 @@ class CategoryController extends Controller
     public function create(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string|min:3|unique:categories,name',
-            'description' => 'required|string|min:3',
+            'en_name' => 'required|string|min:3|unique:categories,en_name',
+            'ar_name' => 'required|string|min:3|unique:categories,ar_name',
+            'en_description' => 'required|string|min:3',
+            'ar_description' => 'required|string|min:3',
             'icon' => 'required|numeric',
         ]);
 
@@ -56,8 +58,10 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         $data = $request->validate([
-            'name' => 'nullable|string|min:3|unique:categories,name,' . $category['id'],
-            'description' => 'nullable|string|min:3',
+            'en_name' => 'nullable|string|min:3|unique:categories,en_name,' . $category['id'],
+            'ar_name' => 'nullable|string|min:3|unique:categories,ar_name,' . $category['id'],
+            'en_description' => 'nullable|string|min:3',
+            'ar_description' => 'nullable|string|min:3',
             'icon' => 'nullable|numeric',
         ]);
 

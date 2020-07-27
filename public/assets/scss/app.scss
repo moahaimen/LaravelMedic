@@ -16,3 +16,11 @@
 html *:not(i.nc-icon|span.nc-icon|i.fa|span.fa) {
     font-family: 'Montserrat' !important;
 }
+
+*[dir=rtl] {
+    text-align: right;
+}
+
+.list-group-item>div>h6 {
+    word-break: break-word;
+}

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Response;
 use App\Models\User;
 use App\Models\UserStatus;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
@@ -59,14 +60,16 @@ class AuthController extends Controller
         try {
             $data['request'] = $request;
 
-            if ($data == null || ($user = $this->attempt($data)) == null) {
-                return Response::Error('Incorrect UserName or Password');
+            $user = $this->attempt($data);
+
+            if ($user instanceof JsonResponse) {
+                return $user;
             }
 
             auth()->setUser($user);
             return $this->composeResponse($user);
         } catch (\Exception $e) {
-            return Response::Error('Incorrect UserName or Password');
+            return Response::Error('Failed to login to the system');
         }
     }
 
@@ -128,8 +131,14 @@ class AuthController extends Controller
         $users = User::where('email', $credintials['email'])->get();
 
         if ($users == null || count($users) != 1) {
-            Response::Error("Invalid Username or Password");
+            return Response::Error("Invalid Username or Password");
         }
-        return $users[0];
+
+        $user = $users[0];
+        $status = UserStatus::find($user['status_id']);
+        if ($status == null || $status['title'] == UserStatus::blocked) {
+            return Response::Error("This account is blocked at the moment, Please contact your admin");
+        }
+        return $user;
     }
 }

@@ -21,3 +21,5 @@ firebase.initializeApp({
 // messages.
 const messaging = firebase.messaging();
 console.log(messaging);
+console.log(messaging);
+console.log(messaging);
