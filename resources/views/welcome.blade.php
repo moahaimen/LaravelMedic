@@ -11,7 +11,7 @@
   <meta name="author" content="Nazeer Allahham" />
   <meta name="description" content="Medical products store" />
 
-  <title>Molar 2020</title>
+  <title>Drug Store 2020</title>
 
   <base href="/" />
 
@@ -31,12 +31,11 @@
       <div class="loader">Loading</div>
     </div>
   </app-root>
-  <noscript>
-    Please enable JavaScript to continue using this application.
-  </noscript>
-  <script src="runtime.e7da13a663003b59b2a8.js" defer></script>
-  <script src="polyfills.0a069515f6a23aba3a81.js" defer></script>
-  <script src="main.37cbc033ddc05a0286fa.js" defer></script>
-</body>
-
+  <noscript>Please enable JavaScript to continue using this
+            application.</noscript
+        >
+        <script src="runtime.b5e88dae446062cae9fa.js" defer></script>
+        <script src="polyfills.0a069515f6a23aba3a81.js" defer></script>
+        <script src="main.37cbc033ddc05a0286fa.js" defer></script>
+    </body>
 </html>

@@ -132,7 +132,7 @@ Route::prefix('/orders2')->group(function () {
 
 Route::prefix('/promocodes')->group(function () {
 
-    Route::middleware('auth:api')->get('/', 'ProvinceController@get');
+    Route::middleware('auth:api')->get('/', 'PromoCodeController@get');
     Route::middleware('auth:api')->post('/', 'PromoCodeController@create');
     Route::middleware('auth:api')->put('/{promoCode}', 'PromoCodeController@update');
     Route::middleware('auth:api')->delete('/{promoCode}', 'PromoCodeController@delete');

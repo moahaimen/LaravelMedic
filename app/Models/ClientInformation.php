@@ -13,6 +13,6 @@ class ClientInformation extends Model
 
 
     protected $fillable = [
-        'name', 'email', 'phone', 'province', 'address', 'notes', 'user_id'
+        'name', 'phone', 'province', 'address', 'notes', 'user_id'
     ];
 }
