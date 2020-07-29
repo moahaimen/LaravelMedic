@@ -132,7 +132,7 @@ Route::prefix('/orders2')->group(function () {
 
 Route::prefix('/promocodes')->group(function () {
 
-    Route::middleware('auth:api')->get('/', 'PromoCodeController@get');
+    Route::middleware('auth:api')->get('/', 'ProvinceController@get');
     Route::middleware('auth:api')->post('/', 'PromoCodeController@create');
     Route::middleware('auth:api')->put('/{promoCode}', 'PromoCodeController@update');
     Route::middleware('auth:api')->delete('/{promoCode}', 'PromoCodeController@delete');
@@ -142,4 +142,20 @@ Route::prefix('/promocodes')->group(function () {
 Route::prefix('/notifications')->group(function () {
 
     Route::middleware('auth:api')->post('/', 'NotificationController@push');
+});
+
+Route::prefix('/provinces')->group(function () {
+
+    Route::get('/', 'ProvinceController@get');
+    Route::middleware('auth:api')->post('/', 'ProvinceController@create');
+    Route::middleware('auth:api')->put('/{province}', 'ProvinceController@update');
+    Route::middleware('auth:api')->delete('/{province}', 'ProvinceController@delete');
+});
+
+Route::prefix('/contactUs')->group(function () {
+
+    Route::get('/', 'ContactUsController@get');
+    Route::middleware('auth:api')->post('/', 'ContactUsController@create');
+    Route::middleware('auth:api')->put('/{province}', 'ContactUsController@update');
+    Route::middleware('auth:api')->delete('/{province}', 'ContactUsController@delete');
 });
