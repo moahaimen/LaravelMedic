@@ -26,7 +26,7 @@ Route::prefix('/auth')->group(function () {
         ->group(function () {
             Route::get('/', 'AuthController@me');
 
-            Route::post('/fcmToken', 'AuthController@change_fcm_token');
+            Route::post('/fcmToken', 'UserFcmTokenController@add');
 
             Route::prefix('/orders')->group(function () {
                 Route::get('/', 'OrderController@get');
@@ -156,6 +156,6 @@ Route::prefix('/contactUs')->group(function () {
 
     Route::get('/', 'ContactUsController@get');
     Route::middleware('auth:api')->post('/', 'ContactUsController@create');
-    Route::middleware('auth:api')->put('/{province}', 'ContactUsController@update');
-    Route::middleware('auth:api')->delete('/{province}', 'ContactUsController@delete');
+    Route::middleware('auth:api')->put('/{contactUs}', 'ContactUsController@update');
+    Route::middleware('auth:api')->delete('/{contactUs}', 'ContactUsController@delete');
 });

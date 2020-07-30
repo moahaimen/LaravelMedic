@@ -6,6 +6,7 @@ use App\Firebase\Firebase;
 use App\Firebase\Push;
 use App\Http\Response;
 use App\Models\User;
+use App\Models\UserFcmToken;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -71,7 +72,8 @@ class NotificationController extends Controller
 
     public static function notify_all_admins($data)
     {
-        $tokens = array_column(User::all()->where('role_id', '=', 1)->where('fcm_token', '!=', null)->toArray(), 'fcm_token');
+        $admins = array_column(User::all()->where('role_id', '=', 1)->toArray(), 'id');
+        $tokens = array_column(UserFcmToken::all()->whereIn('user_id', $admins)->toArray(), 'fcm_token');
 
         foreach ($tokens as $i => $token) {
             $data['push_type'] = 'individual';

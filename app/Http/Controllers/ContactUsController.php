@@ -8,15 +8,15 @@ use Illuminate\Http\Request;
 
 class ContactUsController extends Controller
 {
-/**
+    /**
      * Fetch a list of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function get()
     {
-        $c = ContactUs::all();
-        return Response::Ok($c, 'ContactUs list fetched successfully');
+        $contactUs = ContactUs::all();
+        return Response::Ok($contactUs, 'ContactUs list fetched successfully');
     }
 
     /**
@@ -36,12 +36,12 @@ class ContactUsController extends Controller
         ]);
 
         try {
-            $c = ContactUs::create($data);
+            $contactUs = ContactUs::create($data);
 
-            if ($c == null) {
+            if ($contactUs == null) {
                 Response::Error('Failed to create new contactUs');
             }
-            return Response::Ok($c, 'ContactUs resource created successfully');
+            return Response::Ok($contactUs, 'ContactUs resource created successfully');
         } catch (\Exception $e) {
             // throw $e;
             Response::Error('Failed to create new contactUs');
@@ -52,10 +52,10 @@ class ContactUsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\ContactUs  $c
+     * @param  \App\Models\ContactUs  $contactUs
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ContactUs $c)
+    public function update(Request $request, ContactUs $contactUs)
     {
         $data = $request->validate([
             'section' => 'nullable|string|min:3',
@@ -66,32 +66,31 @@ class ContactUsController extends Controller
         ]);
 
         try {
-            if (!$c->update($data)) {
-                return Response::Error('Failed to update contactUs ' . $c['id']);
+            if (!$contactUs->update($data)) {
+                return Response::Error('Failed to update contactUs ' . $contactUs['id']);
             }
-            return Response::Ok($c, 'ContactUs resource updated successfully');
+            return Response::Ok($contactUs, 'ContactUs resource updated successfully');
         } catch (\Exception $e) {
             // throw $e;
-            return Response::Error('Failed to update contactUs ' . $c['id']);
+            return Response::Error('Failed to update contactUs ' . $contactUs['id']);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\ContactUs  $c
+     * @param  \App\Models\ContactUs  $contactUs
      * @return \Illuminate\Http\Response
      */
-    public function delete(ContactUs $c)
+    public function delete(ContactUs $contactUs)
     {
         try {
             // 1- Delete the entity
-            if (!ContactUs::where('id', '=', $c['id'])->delete()) {
-                return Response::Error('Failed to delete contactUs ' . $c['id']);
+            if (!$contactUs->delete()) {
+                return Response::Error('Failed to delete contactUs ' . $contactUs['id']);
             }
-            return Response::Ok($c, 'ContactUs ' . $c['id'] . ' removed successfully');
-        }
-        catch(\Exception $e) {
+            return Response::Ok($contactUs, 'ContactUs ' . $contactUs['id'] . ' removed successfully');
+        } catch (\Exception $e) {
             throw $e;
         }
     }

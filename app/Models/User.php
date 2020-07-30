@@ -17,7 +17,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'user_name', 'first_name', 'last_name', 'email', 'password', 'api_token', 'role_id', 'status_id', 'fcm_token'
+        'user_name', 'first_name', 'last_name', 'email', 'password', 'api_token', 'role_id', 'status_id'
     ];
 
     /**
@@ -46,5 +46,10 @@ class User extends Authenticatable
     public function status()
     {
         return $this->belongsTo(UserStatus::class);
+    }
+
+    public function fcm_tokens()
+    {
+        return $this->hasMany(UserFcmToken::class, 'user_id');
     }
 }
