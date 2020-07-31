@@ -11,7 +11,7 @@
   <meta name="author" content="Nazeer Allahham" />
   <meta name="description" content="Medical products store" />
 
-  <title>Drug Store 2020</title>
+  <title>Molar Dent 2020</title>
 
   <base href="/" />
 
@@ -22,7 +22,7 @@
   <link href="/assets/css/font-awesome.min.css" rel="stylesheet" />
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#1976d2" />
-  <link rel="stylesheet" href="styles.de64832d4ac8bc541a39.css" />
+  <link rel="stylesheet" href="styles.43af0b652ffcd0a41e6b.css" />
 </head>
 
 <body>
@@ -34,8 +34,8 @@
   <noscript>Please enable JavaScript to continue using this
             application.</noscript
         >
-        <script src="runtime.b5e88dae446062cae9fa.js" defer></script>
+        <script src="runtime.6419a3e08ba42fc0c873.js" defer></script>
         <script src="polyfills.0a069515f6a23aba3a81.js" defer></script>
-        <script src="main.37cbc033ddc05a0286fa.js" defer></script>
+        <script src="main.5088f89fab4971a2511f.js" defer></script>
     </body>
 </html>
