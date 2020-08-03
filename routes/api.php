@@ -142,6 +142,7 @@ Route::prefix('/promocodes')->group(function () {
 Route::prefix('/notifications')->group(function () {
 
     Route::middleware('auth:api')->post('/', 'NotificationController@push');
+    Route::post('/test', 'NotificationController@test');
 });
 
 Route::prefix('/provinces')->group(function () {

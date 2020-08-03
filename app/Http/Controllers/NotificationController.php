@@ -8,7 +8,6 @@ use App\Http\Response;
 use App\Models\User;
 use App\Models\UserFcmToken;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class NotificationController extends Controller
 {
@@ -73,7 +72,7 @@ class NotificationController extends Controller
     public static function notify_all_admins($data)
     {
         $admins = array_column(User::all()->where('role_id', '=', 1)->toArray(), 'id');
-        $tokens = array_column(UserFcmToken::all()->whereIn('user_id', $admins)->toArray(), 'fcm_token');
+        $tokens = array_column(UserFcmToken::all()->whereIn('user_id', $admins)->toArray(), 'token');
 
         foreach ($tokens as $i => $token) {
             $data['push_type'] = 'individual';
@@ -97,5 +96,14 @@ class NotificationController extends Controller
         ]);
 
         return $this->prepare_and_send($data);
+    }
+
+    public function test()
+    {
+        return NotificationController::notify_all_admins([
+            "title" => "New Order Submission",
+            "body" => "Client submitted new order ()",
+            "payload" => 'id',
+        ]);
     }
 }
