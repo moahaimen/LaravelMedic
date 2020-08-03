@@ -97,13 +97,4 @@ class NotificationController extends Controller
 
         return $this->prepare_and_send($data);
     }
-
-    public function test()
-    {
-        return NotificationController::notify_all_admins([
-            "title" => "New Order Submission",
-            "body" => "Client submitted new order ()",
-            "payload" => 'id',
-        ]);
-    }
 }
