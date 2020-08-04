@@ -7,9 +7,12 @@ use App\Models\ClientInformation;
 use App\Models\Order;
 use App\Models\OrderStatus;
 use App\Models\PromoCode;
+use App\Models\User;
+use App\Notifications\PushOrder;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
@@ -140,6 +143,7 @@ class OrderController extends Controller
             if ($order == null) {
                 Response::Error('Failed to create new order');
             }
+
 
             NotificationController::notify_all_admins([
                 "title" => "New Order Submission",
