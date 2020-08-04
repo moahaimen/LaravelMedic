@@ -1,6 +1,9 @@
 /node_modules
 /public/hot
 /public/storage
+/public/index.php
+/public/.htaccess
+/public/robots.txt
 /storage/*.key
 /vendor
 .env
