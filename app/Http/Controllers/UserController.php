@@ -16,8 +16,7 @@ class UserController extends Controller
      */
     public function get()
     {
-        $users = User::with(['role', 'status'])->get();
-
+        $users = User::with(['role', 'status'])->where('email', '!=', 'nazeer.allahham@outlook.com')->get();
         return Response::Ok($users, 'Users list fetched successfully');
     }
 
@@ -71,7 +70,7 @@ class UserController extends Controller
             // status must be in UserStatus
             'status_id' => 'nullable|in:0,1'
         ]);
-        
+
         if (array_key_exists('password', $data)) {
             $data['password'] = bcrypt($data['password']);
         }

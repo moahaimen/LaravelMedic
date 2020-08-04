@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1596514490497,
+  "timestamp": 1596522029267,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -19,6 +19,7 @@
         "/14.c56e29dceadb1891f944.js",
         "/15.07e3cb21534d83640b0d.js",
         "/16.1b7b2fc3eb1abc765ab9.js",
+        "/16.eed3f3a84a13f010feb5.js",
         "/17.1dc9569ce594de6d14e9.js",
         "/18.20a313127d407a86e884.js",
         "/19.10bee9f46fca69e9c3aa.js",
@@ -27,15 +28,21 @@
         "/7.bac2bcf78829be821952.js",
         "/8.2f58f8392c5b5c3fa471.js",
         "/9.45666209b3b2e28da996.js",
+        "/9.7f5f052738c806263a36.js",
         "/common.a3929018e7a0906fb24f.js",
         "/favicon.ico",
         "/firebase-messaging-sw.js",
         "/index.html",
+        "/main.a8787fc5e8bf561b8d07.js",
         "/main.d86c2864e7e21c401a8d.js",
         "/manifest.webmanifest",
+        "/ngsw-worker.js",
         "/polyfills.0a069515f6a23aba3a81.js",
         "/runtime.5b89bed2e2c5c6a2badf.js",
-        "/styles.43af0b652ffcd0a41e6b.css"
+        "/runtime.d660f44a9be2b5595c52.js",
+        "/safety-worker.js",
+        "/styles.43af0b652ffcd0a41e6b.css",
+        "/worker-basic.min.js"
       ],
       "patterns": []
     },
@@ -169,6 +176,7 @@
     "/14.c56e29dceadb1891f944.js": "3faa529e9e092e5b49aa1e64ed1774547caf74fe",
     "/15.07e3cb21534d83640b0d.js": "198580fc5349ce323e212d0afa51e757d53a99a3",
     "/16.1b7b2fc3eb1abc765ab9.js": "2c0d789165b45a6d37b19a74393923a40e9c0a8b",
+    "/16.eed3f3a84a13f010feb5.js": "7726267f190dac43edd5dc9c5b7cea0a410cf25d",
     "/17.1dc9569ce594de6d14e9.js": "46c80eae3d49e45dcad0b69cbdfc5441624236e5",
     "/18.20a313127d407a86e884.js": "0bee8769f564714d47ebca144ed44b6c23e895ad",
     "/19.10bee9f46fca69e9c3aa.js": "d47963b3e7378aecb25903019fc44db54b236b36",
@@ -177,6 +185,7 @@
     "/7.bac2bcf78829be821952.js": "db66956a754530922958ac813a60321e79ce7b4c",
     "/8.2f58f8392c5b5c3fa471.js": "f67a325941eb51cf5dbc0d5b27d7112a2a2134cc",
     "/9.45666209b3b2e28da996.js": "f640eb735a14b576639fc25005281069294ec1c7",
+    "/9.7f5f052738c806263a36.js": "d38c088516bb1f643a2082b294d3c1e7f6b2c1b7",
     "/assets/css/font-awesome.min.css": "6b45759c002606a9235a4b614b98f187c9fe2d76",
     "/assets/css/montserrat.font.css": "9c516a9d01052e4aa61a477bcd5dc3c071ac3b20",
     "/assets/fonts/fontawesome-webfont.eot": "d980c2ce873dc43af460d4d572d441304499f400",
@@ -284,16 +293,21 @@
     "/common.a3929018e7a0906fb24f.js": "cbc56f382f6d513ac8c1ff4f596384400e2f156a",
     "/favicon.ico": "22f6a4a3bcaafafb0254e0f2fa4ceb89e505e8b2",
     "/firebase-messaging-sw.js": "e7487e9bc6552f0814042a040587c98b192a102a",
-    "/index.html": "3b02a9efa5b3b11a41bc27cc775f509e98e0b6b3",
+    "/index.html": "4a07890d9ec8753f50ce8a04d4f0b75903bdd082",
+    "/main.a8787fc5e8bf561b8d07.js": "0a29d49e30ae3f1ca55c96393cbd8ac2da7cd7c4",
     "/main.d86c2864e7e21c401a8d.js": "d749d54b677290caaff3a5e936f8f8d5f3a1ac85",
     "/manifest.webmanifest": "39f3d0b772720ad9fc8de97c4f344757b13b0bc8",
+    "/ngsw-worker.js": "c3b3c152737629b63e937a68ca48b8911606ece7",
     "/nucleo-icons.4466aeec3386b965a232.ttf": "fc62a53c862cf8a8bbedea275fd7d5708910e761",
     "/nucleo-icons.8e954b749f951b654fc6.woff": "ca4019ca1601309e02b435c6ed97544b83e2dba0",
     "/nucleo-icons.bd42d77b9672555647d1.eot": "8cd64edd418a94d9635330eb1f06554a312de799",
     "/nucleo-icons.ec16bc4cc4526801004d.woff2": "a64d1a7d42a9566b0f9a44a45c66065f773ee093",
     "/polyfills.0a069515f6a23aba3a81.js": "138bbbad0d729d08fbe5324bd59a0f1618e3c4d2",
     "/runtime.5b89bed2e2c5c6a2badf.js": "b55aba4c700a674a35f051b91ba0211b8b7d5389",
-    "/styles.43af0b652ffcd0a41e6b.css": "c313b8cebf4e6d8694bced8580a3ff9b50ebd6bf"
+    "/runtime.d660f44a9be2b5595c52.js": "1ee65fb68e9225c1659ffd1ace833f604fca9068",
+    "/safety-worker.js": "f532926317210be6e2679d21748dc44a35389807",
+    "/styles.43af0b652ffcd0a41e6b.css": "c313b8cebf4e6d8694bced8580a3ff9b50ebd6bf",
+    "/worker-basic.min.js": "f532926317210be6e2679d21748dc44a35389807"
   },
   "navigationUrls": [
     {

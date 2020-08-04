@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Response;
 use App\Models\User;
+use App\Models\UserFcmToken;
 use App\Models\UserStatus;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -90,8 +91,17 @@ class AuthController extends Controller
      */
     public function logout()
     {
-        // auth()->logout();    
-        return Response::Ok(null, 'User logged out successfully');
+        $user = auth()->user();
+
+        if ($user instanceof User) {
+            // Delete all fcm tokens
+            UserFcmToken::where('user_id', '=', $user['id'])->delete();
+
+            // Delete access tokens
+            $user->tokens()->delete();
+            return Response::Ok(null, 'User logged out successfully');
+        }
+        return Response::Error('Something went wrong while logging the user out');
     }
 
     /**

@@ -23,12 +23,13 @@ Route::prefix('/auth')->group(function () {
     Route::post('/register', 'AuthController@register');
     Route::post('/login', 'AuthController@login');
     Route::post('/resetPassword', 'AuthController@resetPassword');
-    Route::post('/logout', 'AuthController@logout')->middleware('auth:api');
 
     Route::middleware('auth:api')
         ->prefix('/me')
         ->group(function () {
             Route::get('/', 'AuthController@me');
+
+            Route::get('/logout', 'AuthController@logout');
 
             Route::post('/fcmToken', 'UserFcmTokenController@add');
 
@@ -147,6 +148,7 @@ Route::prefix('/notifications')->group(function () {
 
     Route::middleware('auth:api')->post('/', 'NotificationController@push');
     Route::post('/test', 'NotificationController@test');
+    Route::middleware('auth:api')->post('/resetFcmTokens', 'UserFcmTokenController@reset');
 });
 
 Route::prefix('/provinces')->group(function () {
