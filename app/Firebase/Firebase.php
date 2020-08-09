@@ -63,7 +63,7 @@ class Firebase
      */
     private function sendPushNotification($fields)
     {
-        $serverKey = 'AAAAaUcm4_M:APA91bH4OfKNEMWGCSXrUFV_Dknedh5Rxohbl4b72Zqf36ZEVl8km95JkioiLZTK_KTwAwSsaCV6LFgfYe9SkXcsxG8O3DEQqjus6g63wqrDFbC0NzkULsip1bz_BPmTeFvyjrLwK25C';
+        $serverKey = 'AAAA-AllDOs:APA91bGADRY1-bBaIiN1ZVK_sguwPftEIam1VvsGGZeesAr-sBg9rA8swxEsEyw9QwtLGL9OlYUovAaw71sijK2xCEeycteM0EnwiSOfA1EipTRMzn1sxq1SUbqpuRQ1lEWRwgTSVomL';
 
         // Set POST variables      
         $url = 'https://fcm.googleapis.com/fcm/send';
