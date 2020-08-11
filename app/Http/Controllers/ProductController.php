@@ -42,7 +42,7 @@ class ProductController extends Controller
             'brand_id' => 'required|numeric|exists:brands,id',
             'category_id' => 'required|numeric|exists:categories,id',
             'is_main' => 'required|boolean',
-            'price' => 'required|numeric',
+            'price' => 'required|numeric|min:1',
             'attachments' => 'required|array|min:1|max:4',
             'attachments.*' => 'required|numeric|exists:attachments,id',
         ]);
@@ -80,7 +80,7 @@ class ProductController extends Controller
             'brand_id' => 'nullable|numeric|exists:brands,id',
             'category_id' => 'nullable|numeric|exists:categories,id',
             'is_main' => 'nullable|boolean',
-            'price' => 'nullable|numeric',
+            'price' => 'nullable|numeric|min:1',
             'attachments' => 'nullable|array|min:1|max:4',
             'attachments.*' => 'nullable|numeric|exists:attachments,id',
         ]);
