@@ -347,6 +347,8 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 ng2-file-upload
 
+ngx-image-compress
+
 ngx-print
 MIT
 MIT License

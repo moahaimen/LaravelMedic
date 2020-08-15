@@ -8,21 +8,22 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
   <meta name="viewport" content="width=device-width" />
-  <meta name="author" content="Nazeer Allahham">
-  <meta name="description" content="Medical products store">
+  <meta name="author" content="Nazeer Allahham" />
+  <meta name="description" content="Medical products store" />
 
   <title>Molar Dent 2020</title>
 
   <base href="/" />
 
-  <link rel="manifest" href="/manifest.json">
+  <link rel="manifest" href="/manifest.json" />
 
   <!--     Fonts and icons     -->
   <link href="/assets/css/montserrat.font.css" rel="stylesheet" />
   <link href="/assets/css/font-awesome.min.css" rel="stylesheet" />
-  <link rel="manifest" href="manifest.webmanifest">
-  <meta name="theme-color" content="#1976d2">
-<link rel="stylesheet" href="styles.43af0b652ffcd0a41e6b.css"></head>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#1976d2" />
+  <link rel="stylesheet" href="styles.43af0b652ffcd0a41e6b.css" />
+</head>
 
 <body>
   <app-root>
@@ -30,7 +31,12 @@
       <div class="loader">Loading</div>
     </div>
   </app-root>
-  <noscript>Please enable JavaScript to continue using this application.</noscript>
-<script src="runtime.7aa2749ad9e068dc8918.js" defer></script><script src="polyfills.0a069515f6a23aba3a81.js" defer></script><script src="main.7d958323e39ef53183c0.js" defer></script></body>
-
+  <noscript>Please enable JavaScript to continue using this
+            application.</noscript
+        >
+        <script src="runtime.8f0f93e59796645509e5.js" defer></script>
+        <script src="polyfills.0a069515f6a23aba3a81.js" defer></script>
+        <script src="scripts.4e84f8ae59670f438b01.js" defer></script>
+        <script src="main.f36fcd90b70eff36d553.js" defer></script>
+    </body>
 </html>

@@ -84,7 +84,6 @@ Route::prefix('/permissions')->group(function () {
 
 Route::prefix('/attachments')->group(function () {
 
-    Route::get('/migrate', 'AttachmentController@migrate_attachments_urls');
     Route::get('/download/{name}', 'AttachmentController@download');
     Route::middleware('auth:api')->post('/upload', 'AttachmentController@upload');
 });

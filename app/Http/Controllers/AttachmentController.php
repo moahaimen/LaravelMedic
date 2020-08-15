@@ -41,13 +41,4 @@ class AttachmentController extends Controller
         }
         return Storage::download($attachment['path']);
     }
-
-    public function migrate_attachments_urls()
-    {
-        $attachments = Attachment::all();
-
-        foreach ($attachments as $i => $a) {
-            $a->update(['url' => 'https://molardentalmaterials.com/attachments/0/' . $a['name']]);
-        }
-    }
 }

@@ -33,7 +33,7 @@ class CategoryController extends Controller
             'ar_name' => 'required|string|min:3|unique:categories,ar_name',
             'en_description' => 'required|string|min:3',
             'ar_description' => 'required|string|min:3',
-            'icon' => 'required|numeric',
+            'icon' => 'required|string',
         ]);
 
         try {
@@ -62,7 +62,7 @@ class CategoryController extends Controller
             'ar_name' => 'nullable|string|min:3|unique:categories,ar_name,' . $category['id'],
             'en_description' => 'nullable|string|min:3',
             'ar_description' => 'nullable|string|min:3',
-            'icon' => 'nullable|numeric',
+            'icon' => 'nullable|string',
         ]);
 
         try {
