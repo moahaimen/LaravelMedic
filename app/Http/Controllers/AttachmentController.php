@@ -47,7 +47,7 @@ class AttachmentController extends Controller
         $attachments = Attachment::all();
 
         foreach ($attachments as $i => $a) {
-            $a->update(['url' => 'https://molardentalmaterials.com/attachments/' . $a['name']]);
+            $a->update(['url' => 'https://molardentalmaterials.com/attachments/0/' . $a['name']]);
         }
     }
 }
