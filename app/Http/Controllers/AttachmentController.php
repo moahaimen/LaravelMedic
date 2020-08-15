@@ -21,7 +21,7 @@ class AttachmentController extends Controller
         $data['type'] = $data['type'] == 'video' ? Attachment::video : Attachment::image;
         $data['name'] = time() . '.' . $data['file']->extension();
         $data['path'] = $data['type'] . '/' . $data['name'];
-        $data['url'] = 'https://molardentalmaterials.com/attachments/' . $data['name'];
+        $data['url'] = 'https://molardentalmaterials.com/attachments/' . $data['type'] . '/' . $data['name'];
 
         $dir = 'attachments' . '/' . $data['type'];
 
