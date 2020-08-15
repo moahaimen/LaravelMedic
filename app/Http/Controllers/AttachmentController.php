@@ -21,9 +21,9 @@ class AttachmentController extends Controller
         $data['type'] = $data['type'] == 'video' ? Attachment::video : Attachment::image;
         $data['name'] = time() . '.' . $data['file']->extension();
         $data['path'] = $data['type'] . '/' . $data['name'];
-        $data['url'] = 'https://molardentalmaterials.com/api/attachments/download/' . $data['name'];
+        $data['url'] = 'https://molardentalmaterials.com/images/' . $data['name'];
 
-        $dir = storage_path('app') . '/' . $data['type'];
+        $dir = public_path('images' . '/' . $data['type']);
 
         if (!$data['file']->move($dir, $data['name'])) {
             return Response::Error('Failed to save the attachment');
@@ -40,5 +40,14 @@ class AttachmentController extends Controller
             return Response::Error('Failed to download the attachment');
         }
         return Storage::download($attachment['path']);
+    }
+
+    public function migrate_attachments_urls()
+    {
+        $attachments = Attachment::all();
+
+        foreach ($attachments as $i => $a) {
+            $a->update(['url' => 'https://molardentalmaterials.com/images/' . $a['name']]);
+        }
     }
 }
