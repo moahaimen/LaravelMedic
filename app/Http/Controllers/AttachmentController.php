@@ -23,7 +23,7 @@ class AttachmentController extends Controller
         $data['path'] = $data['type'] . '/' . $data['name'];
         $data['url'] = 'https://molardentalmaterials.com/images/' . $data['name'];
 
-        $dir = 'public_html'. '/' .'images' . '/' . $data['type'];
+        $dir = 'images' . '/' . $data['type'];
 
         if (!$data['file']->move($dir, $data['name'])) {
             return Response::Error('Failed to save the attachment');
