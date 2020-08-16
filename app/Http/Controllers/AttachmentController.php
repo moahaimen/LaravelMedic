@@ -15,7 +15,7 @@ class AttachmentController extends Controller
         $data = $request->validate([
             'type' => 'required|string|in:video,image',
             // 'file' => 'required|dimensions:ratio=3/2|mimes:jpeg,png,mp4',
-            'file' => 'required|mimes:jpeg,png,mp4',
+            'file' => 'required',
         ]);
 
         $data['type'] = $data['type'] == 'video' ? Attachment::video : Attachment::image;
