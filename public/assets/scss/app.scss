@@ -24,3 +24,7 @@ html *:not(i.nc-icon|span.nc-icon|i.fa|span.fa) {
 .list-group-item>div>h6 {
     word-break: break-word;
 }
+
+.bg-highlighted {
+    background-color: #f8f9fa !important;
+}
