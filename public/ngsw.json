@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1598023062597,
+  "timestamp": 1598218625508,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -31,7 +31,7 @@
         "/favicon.ico",
         "/firebase-messaging-sw.js",
         "/index.html",
-        "/main.e95f20aea0a7e49c8ff1.js",
+        "/main.77539ea9188c24529059.js",
         "/manifest.webmanifest",
         "/polyfills.bcfd6e890dbe9082dc18.js",
         "/runtime.29b34d4ee6cd7896e72f.js",
@@ -265,8 +265,8 @@
     "/common.c9a53b17570a6492801a.js": "9ba5cdde278338295e1bb5552239b0c61b117c3a",
     "/favicon.ico": "22f6a4a3bcaafafb0254e0f2fa4ceb89e505e8b2",
     "/firebase-messaging-sw.js": "a818ce6c67eaceac90393881730709d6ca1b48af",
-    "/index.html": "716253c7f9c9b270e6d688537041dfb2969b4937",
-    "/main.e95f20aea0a7e49c8ff1.js": "1c08e92d625ca5be1fe380549bccf0d2fe18429b",
+    "/index.html": "1c8a31bff53c514cad8943150457526a28cbe6b2",
+    "/main.77539ea9188c24529059.js": "1d52d9157dd42a897ed4f53defc9908d08bf87ff",
     "/manifest.webmanifest": "d8a97d84738f6d913d80499a33ba36286f76b393",
     "/nucleo-icons.4466aeec3386b965a232.ttf": "fc62a53c862cf8a8bbedea275fd7d5708910e761",
     "/nucleo-icons.8e954b749f951b654fc6.woff": "ca4019ca1601309e02b435c6ed97544b83e2dba0",
