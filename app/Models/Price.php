@@ -7,7 +7,7 @@ use Ramsey\Uuid\Type\Decimal;
 
 class Price extends Model
 {
-    public static function make(int $value, Price $current = null): Price
+    public static function make(int $value, bool $isDiscount, Price $current = null): Price
     {
         $data = [
             'value' => $value
@@ -16,6 +16,10 @@ class Price extends Model
         if ($current != null) {
             $data['previous_id'] = $current['id'];
         }
+        
+        if ($isDiscount != null && $isDiscount == true) {
+            $data['is_discount'] = true;
+        }
 
         return Price::create($data);
     }
@@ -23,10 +27,11 @@ class Price extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'value', 'updated_at', 'previous_id'
+        'value', 'updated_at', 'previous_id', 'is_discount'
     ];
 
     protected $casts = [
-        'value' => 'int'
+        'value' => 'int',
+        'is_discount' => 'boolean',
     ];
 }

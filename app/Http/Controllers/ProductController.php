@@ -14,14 +14,19 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function get()
+    public function get(Request $request)
     {
         $products = Product::with([
             'brand',
             'category',
             'price',
             'attachments',
-        ])->get();
+        ]);
+
+        if (($a = $request->input('available')) != null) {
+            $products = $products->where('available', '=', $a);
+        }
+        $products = $products->get();
 
         return Response::Ok($products, 'Products list fetched successfully');
     }
@@ -41,14 +46,18 @@ class ProductController extends Controller
             'ar_description' => 'required|max:750',
             'brand_id' => 'required|numeric|exists:brands,id',
             'category_id' => 'required|numeric|exists:categories,id',
+            'available' => 'required|boolean',
             'is_main' => 'required|boolean',
             'price' => 'required|numeric|min:1',
+            'price_is_discount' => 'required_with:price|boolean',
             'attachments' => 'required|array|min:1|max:4',
             'attachments.*' => 'required|numeric|exists:attachments,id',
         ]);
 
+        dd($data);
+
         try {
-            $data['price_id'] = Price::make($data['price'])['id'];
+            $data['price_id'] = Price::make($data['price'], $data['price_is_discount'])['id'];
 
             $product = Product::create($data);
             $product->set_attachments($data['attachments']);
@@ -75,12 +84,14 @@ class ProductController extends Controller
         $data = $request->validate([
             'en_name' => 'nullable|string|min:3|unique:products,en_name,' . $product['id'],
             'ar_name' => 'nullable|string|min:3|unique:products,ar_name,' . $product['id'],
-            'en_description' => 'required|string|min:3',
-            'ar_description' => 'required|string|min:3',
+            'en_description' => 'nullable|string|min:3',
+            'ar_description' => 'nullable|string|min:3',
             'brand_id' => 'nullable|numeric|exists:brands,id',
             'category_id' => 'nullable|numeric|exists:categories,id',
+            'available' => 'nullable|boolean',
             'is_main' => 'nullable|boolean',
             'price' => 'nullable|numeric|min:1',
+            'price_is_discount' => 'required_with:price|boolean',
             'attachments' => 'nullable|array|min:1|max:4',
             'attachments.*' => 'nullable|numeric|exists:attachments,id',
         ]);
@@ -91,12 +102,15 @@ class ProductController extends Controller
             }
 
             $price = $product->price()->get()->first();
-            if (array_key_exists('price', $data) && $price['value'] != $data['price']) {
-                $data['price_id'] = Price::make($data['price'], $price)['id'];
+            if (array_key_exists('price', $data)) {
+                if ($price['value'] != $data['price']) {
+                    $data['price_id'] = Price::make($data['price'], $data['price_is_discount'], $price)['id'];
+                } else if (array_key_exists('price_is_discount', $data)) {
+                    $price->update(['is_discount' => $data['price_is_discount']]);
+                }
             }
 
             if (!$product->update($data)) {
-
                 return Response::Error('Failed to update product ' . $product['id']);
             }
             return Response::Ok($product, 'Product resource updated successfully');
