@@ -34,4 +34,9 @@ class Price extends Model
         'value' => 'int',
         'is_discount' => 'boolean',
     ];
+
+    public function previous()
+    {
+        return $this->belongsTo(Price::class, 'previous_id');
+    }
 }

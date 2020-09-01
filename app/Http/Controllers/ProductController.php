@@ -20,6 +20,7 @@ class ProductController extends Controller
             'brand',
             'category',
             'price',
+            'price.previous',
             'attachments',
         ]);
 
