@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Response;
 use App\Models\Price;
 use App\Models\Product;
+use Exception;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -50,7 +51,7 @@ class ProductController extends Controller
             'available' => 'required|boolean',
             'is_main' => 'required|boolean',
             'price' => 'required|numeric|min:1',
-            'price_is_discount' => 'required_with:price|boolean',
+            // 'price_is_discount' => 'required_with:price|boolean',
             'attachments' => 'required|array|min:1|max:4',
             'attachments.*' => 'required|numeric|exists:attachments,id',
         ]);
@@ -58,7 +59,7 @@ class ProductController extends Controller
         // dd($data);
 
         try {
-            $data['price_id'] = Price::make($data['price'], $data['price_is_discount'])['id'];
+            $data['price_id'] = Price::make($data['price'], false)['id'];
 
             $product = Product::create($data);
             $product->set_attachments($data['attachments']);
@@ -103,12 +104,12 @@ class ProductController extends Controller
             }
 
             $price = $product->price()->get()->first();
-            if (array_key_exists('price', $data)) {
+            if ($price instanceof Price && array_key_exists('price', $data)) {
                 if ($price['value'] != $data['price']) {
                     $data['price_id'] = Price::make($data['price'], $data['price_is_discount'], $price)['id'];
-                } else if (array_key_exists('price_is_discount', $data)) {
+                } else if (array_key_exists('price_is_discount', $data) && $price->previous()->get()->first() instanceof Price) {
                     $price->update(['is_discount' => $data['price_is_discount']]);
-                }
+                } else return Response::Error("To mark price as Discount you must change it first");
             }
 
             if (!$product->update($data)) {
