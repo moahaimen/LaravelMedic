@@ -55,7 +55,7 @@ class Product extends Model
             }
         }
 
-        // dd($toAdd, $toDelete);
+        // // dd($toAdd, $toDelete);
 
         $this->attachments()->attach($toAdd);
         $this->attachments()->detach($toDelete);

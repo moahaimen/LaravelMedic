@@ -20,11 +20,11 @@ class Order extends Model
     public function delete_statuses()
     {
         $current = $this->status()->get()[0];
-        dd($current);
+        // dd($current);
 
         while($current != null) {
             $previous = $current->previous();
-            dd($previous);
+            // dd($previous);
             $current = $previous;
             if(!$current->delete()) {
                 return false;

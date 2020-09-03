@@ -55,7 +55,7 @@ class ProductController extends Controller
             'attachments.*' => 'required|numeric|exists:attachments,id',
         ]);
 
-        dd($data);
+        // dd($data);
 
         try {
             $data['price_id'] = Price::make($data['price'], $data['price_is_discount'])['id'];
