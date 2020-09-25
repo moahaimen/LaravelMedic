@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    public const filterable = [
+        'en_name', 'en_description', 'ar_name', 'ar_description', 'brand.en_name', 'category.en_name', 'is_main', 'price.value', 'available'
+    ];
+
     protected $fillable = [
         'en_name', 'en_description', 'ar_name', 'ar_description', 'brand_id', 'category_id', 'is_main', 'price_id', 'available'
     ];

@@ -14,9 +14,13 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function get()
+    public function get(Request $request)
     {
-        $users = User::with(['role', 'status'])->where('email', '!=', 'nazeer.allahham@outlook.com')->get();
+        $users = User::with(['role', 'status'])
+            ->where('email', '!=', 'nazeer.allahham@outlook.com');
+
+        $users = $this->filter($users, $request, User::filterable);
+        $users = $users->paginate(15);
         return Response::Ok($users, 'Users list fetched successfully');
     }
 

@@ -26,9 +26,12 @@ class PromoCodeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function get()
+    public function get(Request $request)
     {
-        $promoCodes = PromoCode::all();
+        $promoCodes = PromoCode::query();
+
+        $promoCodes = $this->filter($promoCodes, $request, PromoCode::filterable);
+        $promoCodes = $promoCodes->paginate(15);
 
         return Response::Ok($promoCodes, 'Promo codes list fetched successfully');
     }

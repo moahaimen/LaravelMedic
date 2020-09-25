@@ -13,9 +13,12 @@ class ProvinceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function get()
+    public function get(Request $request)
     {
-        $provinces = Province::all();
+        $provinces = Province::query();
+
+        $provinces = $this->filter($provinces, $request, Province::filterable);
+        $provinces = $provinces->paginate(15);
         return Response::Ok($provinces, 'Provinces list fetched successfully');
     }
 

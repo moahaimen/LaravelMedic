@@ -11,6 +11,9 @@ class User extends Authenticatable
 {
     use HasApiTokens, Notifiable;
 
+    public const filterable = ['user_name', 'first_name', 'last_name', 'email', 'role.name', 'status.title'];
+
+
     /**
      * The attributes that are mass assignable.
      *

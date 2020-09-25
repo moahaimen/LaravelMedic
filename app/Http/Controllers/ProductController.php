@@ -17,19 +17,17 @@ class ProductController extends Controller
      */
     public function get(Request $request)
     {
-        $products = Product::with([
-            'brand',
-            'category',
-            'price',
-            'price.previous',
-            'attachments',
-        ]);
+        $products = Product::with(['brand', 'category', 'price', 'price.previous', 'attachments']);
 
-        if (($a = $request->input('available')) != null) {
-            $products = $products->where('available', '=', $a);
+        foreach (Product::filterable as $i => $field) {
+            $q = $request->input($field);
+
+            if($q != null)
+            {
+                $products = $products->where($field, 'LIKE', "%{$q}%");
+            }
         }
-        $products = $products->get();
-
+        $products = $products->paginate(15);
         return Response::Ok($products, 'Products list fetched successfully');
     }
 

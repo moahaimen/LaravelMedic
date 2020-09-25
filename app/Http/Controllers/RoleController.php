@@ -13,9 +13,11 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function get()
+    public function get(Request $request)
     {
-        $roles = Role::all();
+        $roles = Role::query();
+        $roles = $this->filter($roles, $request, Role::filterable);
+        $roles = $roles->paginate(15);
 
         return Response::Ok($roles, 'Roles list fetched successfully');
     }

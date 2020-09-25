@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model
 {
+    public const filterable = ['name', 'description'];
+
     protected $fillable = [
         'name',  'description'
     ];

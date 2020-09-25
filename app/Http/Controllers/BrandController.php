@@ -13,9 +13,11 @@ class BrandController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function get()
+    public function get(Request $request)
     {
-        $brands = Brand::with('attachment')->get();
+        $brands = Brand::with('attachment');
+        $brands = $this->filter($brands, $request, Brand::filterable);
+        $brands = $brands->paginate(15);
 
         return Response::Ok($brands, 'Brands list fetched successfully');
     }

@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\DB;
 
 class Order extends Model
 {
+    public const filterable = [
+        'status.title', 'client.name', 'client.phone', 'client.province', 'client.address', 'client.notes'
+    ];
+
     protected $fillable = [
         'status_id', 'client_id', 'promo_code_id'
     ];

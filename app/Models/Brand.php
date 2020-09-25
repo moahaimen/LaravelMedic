@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Brand extends Model
 {
+    public const filterable = ['en_name',  'en_description', 'ar_name', 'ar_description'];
+    
     protected $fillable = [
         'en_name',  'en_description', 'ar_name',  'ar_description', 'attachment_id'
     ];

@@ -13,10 +13,12 @@ class PermissionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function get()
+    public function get(Request $request)
     {
-        $permissions = Permission::all();
+        $permissions = Permission::query();
 
+        $permissions = $this->filter($permissions, $request, Permission::filterable);
+        $permissions = $permissions->paginate(15);
         return Response::Ok($permissions, 'Permissions list fetched successfully');
     }
 

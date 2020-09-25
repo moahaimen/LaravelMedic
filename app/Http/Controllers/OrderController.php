@@ -17,37 +17,6 @@ use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
-    private function handle_order_status(Builder $orders, int $status): Builder
-    {
-        if ($status == 0) {
-            $orders = $orders->whereHas('status', function (Builder $q) {
-                $q->where('title', 0);
-            });
-        } else if ($status == 1) {
-            $orders = $orders->whereHas('status', function (Builder $q) {
-                $q->where('title', 1);
-            });
-        } else if ($status == 2) {
-            $orders = $orders->whereHas('status', function (Builder $q) {
-                $q->where('title', 2);
-            });
-        } else if ($status == 3) {
-            $orders = $orders->whereHas('status', function (Builder $q) {
-                $q->where('title', 3);
-            });
-        } else if ($status == 4) {
-            $orders = $orders->whereHas('status', function (Builder $q) {
-                $q->where('title', 4);
-            });
-        } else if ($status == 5) {
-            $orders = $orders->whereHas('status', function (Builder $q) {
-                $q->where('title', 5);
-            });
-        }
-
-        return $orders;
-    }
-
     /**
      * Fetch a list of the resource.
      *
@@ -57,20 +26,13 @@ class OrderController extends Controller
     {
         try {
             $orders = Order::with([
-                'promo_code',
-                'status',
-                'client',
-                'order_products',
-                'order_products.price',
-                'order_products.product',
+                'promo_code', 'status', 'client', 'order_products', 'order_products.price', 'order_products.product'
             ]);
 
-            $status = $request->input('status');
-            if ($status != null) {
-                $orders = $this->handle_order_status($orders, $status);
-            }
+            $orders = $this->filter($orders, $request, Order::filterable);
+            $orders = $orders->paginate(15);
 
-            return Response::Ok($orders->get(), 'Orders list fetched successfully');
+            return Response::Ok($orders, 'Orders list fetched successfully');
         } catch (\Throwable $th) {
             return Response::Error('Failed to fetch orders list');
         }

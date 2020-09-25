@@ -13,9 +13,12 @@ class ContactUsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function get()
+    public function get(Request $request)
     {
-        $contactUs = ContactUs::all();
+        $contactUs = ContactUs::query();
+        $contactUs = $this->filter($contactUs, $request, ContactUs::filterable);
+        $contactUs = $contactUs->paginate(15);
+
         return Response::Ok($contactUs, 'ContactUs list fetched successfully');
     }
 

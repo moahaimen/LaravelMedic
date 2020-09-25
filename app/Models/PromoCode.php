@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class PromoCode extends Model
 {
+    public const filterable = [
+        'code', 'type', 'discount', 'created_at', 'updated_at', 'start_at', 'finish_at'
+    ];
+
     public const constant = 0;
     public const percentage = 1;
 
@@ -13,6 +17,7 @@ class PromoCode extends Model
     {
         return [0, 1];
     }
+
 
     protected $fillable = [
         'code', 'type', 'discount', 'created_at', 'updated_at', 'start_at', 'finish_at'

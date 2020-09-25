@@ -13,9 +13,11 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function get()
+    public function get(Request $request)
     {
-        $categories = Category::all();
+        $categories = Category::query();
+        $categories = $this->filter($categories, $request, Category::filterable);
+        $categories = $categories->paginate(15);
 
         return Response::Ok($categories, 'Categoryies list fetched successfully');
     }
