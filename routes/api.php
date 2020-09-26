@@ -114,6 +114,7 @@ Route::prefix('/products')->group(function () {
 
     // fetch allowed to public
     Route::get('/', 'ProductController@get');
+    Route::get('/keys', 'ProductController@getByKeys');
 
     // create, update and delete are allowed only for authenticated and authorized
     Route::middleware('auth:api')->post('/', 'ProductController@create');

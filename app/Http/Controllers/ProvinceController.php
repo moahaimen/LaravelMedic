@@ -15,10 +15,12 @@ class ProvinceController extends Controller
      */
     public function get(Request $request)
     {
+        $size = $request->input('all') == true ? -1 : 15;
+
         $provinces = Province::query();
 
         $provinces = $this->filter($provinces, $request, Province::filterable);
-        $provinces = $provinces->paginate(15);
+        $provinces = $provinces->paginate($size);
         return Response::Ok($provinces, 'Provinces list fetched successfully');
     }
 

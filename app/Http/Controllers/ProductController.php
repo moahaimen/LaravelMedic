@@ -22,12 +22,29 @@ class ProductController extends Controller
         foreach (Product::filterable as $i => $field) {
             $q = $request->input($field);
 
-            if($q != null)
-            {
+            if ($q != null) {
                 $products = $products->where($field, 'LIKE', "%{$q}%");
             }
         }
         $products = $products->paginate(15);
+        return Response::Ok($products, 'Products list fetched successfully');
+    }
+
+    /**
+     * Fetch a list of products for the given IDs.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getByKeys(Request $request)
+    {
+        $q = $request->input('q');
+        $v = str_getcsv($q);
+
+        $products = Product::query()
+            ->with(['brand', 'category', 'price', 'price.previous', 'attachments'])
+            ->whereKey($v);
+
+        $products = $products->get();
         return Response::Ok($products, 'Products list fetched successfully');
     }
 

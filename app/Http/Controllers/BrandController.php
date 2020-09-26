@@ -15,9 +15,11 @@ class BrandController extends Controller
      */
     public function get(Request $request)
     {
+        $size = $request->input('all') == true ? -1 : 15;
+
         $brands = Brand::with('attachment');
         $brands = $this->filter($brands, $request, Brand::filterable);
-        $brands = $brands->paginate(15);
+        $brands = $brands->paginate($size);
 
         return Response::Ok($brands, 'Brands list fetched successfully');
     }

@@ -15,9 +15,11 @@ class CategoryController extends Controller
      */
     public function get(Request $request)
     {
+        $size = $request->input('all') == true ? -1 : 15;
+
         $categories = Category::query();
         $categories = $this->filter($categories, $request, Category::filterable);
-        $categories = $categories->paginate(15);
+        $categories = $categories->paginate($size);
 
         return Response::Ok($categories, 'Categoryies list fetched successfully');
     }
