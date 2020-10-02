@@ -15,10 +15,12 @@ class PermissionController extends Controller
      */
     public function get(Request $request)
     {
+        $size = $request->input('all') == true ? -1 : 15;
+
         $permissions = Permission::query();
 
         $permissions = $this->filter($permissions, $request, Permission::filterable);
-        $permissions = $permissions->paginate(15);
+        $permissions = $permissions->paginate($size);
         return Response::Ok($permissions, 'Permissions list fetched successfully');
     }
 
