@@ -28,10 +28,10 @@ class Controller extends BaseController
                     $column = $queries[1];
 
                     $builder = $builder->whereHas($relation, function ($query) use ($column, $q) {
-                        return $query->where($column, 'ILIKE', "%{$q}%");
+                        return $query->where($column, 'LIKE', "%{$q}%");
                     });
                 } else {
-                    $builder = $builder->where($field, 'ILIKE', "%{$q}%");
+                    $builder = $builder->where($field, 'LIKE', "%{$q}%");
                 }
             }
         } catch (\Exception $e) {
