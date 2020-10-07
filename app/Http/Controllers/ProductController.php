@@ -17,16 +17,13 @@ class ProductController extends Controller
      */
     public function get(Request $request)
     {
+        $size = $request->input('all') == true ? -1 : 15;
+
         $products = Product::with(['brand', 'category', 'price', 'price.previous', 'attachments']);
 
-        foreach (Product::filterable as $i => $field) {
-            $q = $request->input($field);
+        $products = $this->filter($products, $request, Product::filterable);
+        $products = $products->paginate($size);
 
-            if ($q != null) {
-                $products = $products->where($field, 'LIKE', "%{$q}%");
-            }
-        }
-        $products = $products->paginate(15);
         return Response::Ok($products, 'Products list fetched successfully');
     }
 
