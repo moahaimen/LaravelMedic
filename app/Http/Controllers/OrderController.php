@@ -226,19 +226,23 @@ class OrderController extends Controller
 
     public function fixOrdersProvinces()
     {
-        $clients = ClientInformation::all();
-        foreach ($clients as $i => $client) {
-            $province = Province::query()
-                ->where('en_name', '=', $client['province'])
-                ->orWhere('ar_name', '=', $client['province'])
-                ->first();
+        $orders = Order::query()->with('client');
 
+        foreach ($orders as $i => $order) {
+            
+            $province = Province::query()
+                ->where('en_name', '=', $order['client']['province'])
+                ->orWhere('ar_name', '=', $order['client']['province'])
+                ->first();
+    
             if ($province == null) {
-                throw new Exception('Chosen province does not match ' . $client['province'] . ' from client:' . $client['name']);
+                throw new Exception('Chosen province does not match ' . $order['client']['province'] . ' from client:' . $order['client']['name']);
             }
-            $client['province'] = $province['en_name'];
-            $client->save();
+            $order['client']['province'] = $province['en_name'];
+            $order['client']->save();
+            $order->save();
         }
+
         return true;
     }
 }
