@@ -7,8 +7,10 @@ use App\Models\ClientInformation;
 use App\Models\Order;
 use App\Models\OrderStatus;
 use App\Models\PromoCode;
+use App\Models\Province;
 use App\Models\User;
 use App\Notifications\PushOrder;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -220,5 +222,23 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             return Response::Error('Failed to delete order ' . $order['id']);
         }
+    }
+
+    public function fixOrdersProvinces()
+    {
+        $clients = ClientInformation::all();
+        foreach ($clients as $i => $client) {
+            $province = Province::query()
+                ->where('en_name', '=', $client['province'])
+                ->orWhere('ar_name', '=', $client['province'])
+                ->first();
+
+            if ($province == null) {
+                throw new Exception('Chosen province does not match ' . $client['province']);
+            }
+            $client['province'] = $province['en_name'];
+            $client->save();
+        }
+        return true;
     }
 }
