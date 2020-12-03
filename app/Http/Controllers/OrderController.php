@@ -234,7 +234,7 @@ class OrderController extends Controller
                 ->first();
 
             if ($province == null) {
-                throw new Exception('Chosen province does not match ' . $client['province']);
+                throw new Exception('Chosen province does not match ' . $client['province'] . ' from client:' . $client['name']);
             }
             $client['province'] = $province['en_name'];
             $client->save();
