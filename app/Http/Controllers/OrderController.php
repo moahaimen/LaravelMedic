@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\Authorize;
 use App\Http\Response;
 use App\Models\ClientInformation;
 use App\Models\Order;
@@ -9,16 +10,23 @@ use App\Models\OrderStatus;
 use App\Models\PromoCode;
 use App\Models\Province;
 use App\Models\User;
-use App\Notifications\PushOrder;
+use App\Services\NotificationService;
+use App\Services\OrderService;
 use Exception;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
+    var OrderService $order;
+    var NotificationService $notifier;
+
+    public function __construct(NotificationService $notifier, OrderService $order)
+    {
+        $this->notifier = $notifier;
+        $this->order = $order;
+    }
+
+
     /**
      * Fetch a list of the resource.
      *
@@ -27,16 +35,32 @@ class OrderController extends Controller
     public function get(Request $request)
     {
         try {
-            $orders = Order::with([
-                'promo_code', 'status', 'client', 'order_products', 'order_products.price', 'order_products.product'
-            ]);
-
-            $orders = $this->filter($orders, $request, Order::filterable);
-            $orders = $orders->paginate(15);
-
+            $orders = $this->order->getOrders($request);
             return Response::Ok($orders, 'Orders list fetched successfully');
-        } catch (\Throwable $th) {
+        } catch (\Exception $e) {
             return Response::Error('Failed to fetch orders list');
+        }
+    }
+
+    /**
+     * Fetch a list of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getUserOrders(Request $request)
+    {
+        try {
+            $user = auth()->user();
+
+            if ($user instanceof User) {
+
+                $orders = $this->order->getUserOrders($user);
+                return Response::Ok($orders, 'Your orders fetched successfully');
+            } else {
+                throw new Exception("Failed to recognize identity");
+            }
+        } catch (\Throwable $th) {
+            return Response::Error('Failed to fetch your orders, ' . $th->getMessage());
         }
     }
 
@@ -52,15 +76,38 @@ class OrderController extends Controller
             'products' => 'required|array|min:1',
             'products.*.quantity' => 'required|numeric|min:1',
             'products.*.product_id' => 'required|numeric|exists:products,id',
-            'client.name' => 'required|string|min:3',
-            'client.phone' => 'required|string',
-            'client.province' => 'required|string|min:3',
-            'client.address' => 'required|string|min:3',
+            'client.name' => 'required_unless:user_id|string|min:3',
+            'client.phone' => 'required_unless:user_id|string',
+            'client.province_id' => 'required_unless:user_id|numeric|exists:provinces,id',
+            'client.address' => 'required_unless:user_id|string|min:3',
             'client.notes' => 'nullable|string|min:3',
             'client.user_id' => 'nullable|numeric|exists:users,id',
             'promo_code' => 'nullable|string|exists:promo_codes,code',
         ]);
-        return $this->add_order($data);
+
+        try {
+            $createData = [];
+
+            $createData['user_id'] = $data['client']['id'];
+            if (array_key_exists('promo_code', $data) && $data['promo_code'] != null) {
+                $createData['promo_code_id'] = PromoCode::getPromoCodeId($data['promo_code']);
+            }
+            $order = Order::create($createData);
+
+            OrderStatus::make_order_status($order, OrderStatus::pending, auth()->id());
+            ClientInformation::make_from_user($order, null, $data['client']);
+
+            $order->set_products($data['products']);
+
+            if ($order == null) {
+                throw new Exception('Created order is null');
+            }
+            $this->notify_order_stakeholders($order);
+
+            return Response::Ok($order, 'Order resource created successfully');
+        } catch (\Exception $e) {
+            return Response::Error('Failed to create new order');
+        }
     }
 
     /**
@@ -69,56 +116,65 @@ class OrderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function create2(Request $request)
+    public function createUserOrder(Request $request)
     {
-        $o = $request->input('o');
-        $d = base64_decode($o);
-        $e = json_decode($d, true);
-
-        $data = Validator::make($e, [
+        $data = $request->validate([
             'products' => 'required|array|min:1',
             'products.*.quantity' => 'required|numeric|min:1',
             'products.*.product_id' => 'required|numeric|exists:products,id',
-            'client.name' => 'required|string|min:3',
-            'client.phone' => 'required|string',
-            'client.province' => 'required|string|min:3',
-            'client.address' => 'required|string|min:3',
+            'client.name' => 'nullable|string|min:3',
+            'client.phone' => 'nullable|string',
+            'client.province_id' => 'nullable|numeric|exists:provinces,id',
+            'client.address' => 'nullable|string|min:3',
             'client.notes' => 'nullable|string|min:3',
-            'client.user_id' => 'nullable|numeric|exists:users,id',
             'promo_code' => 'nullable|string|exists:promo_codes,code',
-        ])->validate();
+        ]);
 
-        return $this->add_order($data);
+        try {
+            $user = auth()->user();
+
+            if ($user instanceof User) {
+
+                $createData = [];
+
+                $createData['user_id'] = $user->id;
+                if (array_key_exists('promo_code', $data) && $data['promo_code'] != null) {
+                    $createData['promo_code_id'] = PromoCode::getPromoCodeId($data['promo_code']);
+                }
+                $order = Order::create($createData);
+
+                OrderStatus::make_order_status($order, OrderStatus::pending, $user->id);
+                ClientInformation::make_from_user($order, $user, $data['client'] ?? []);
+
+                $order->set_products($data['products']);
+
+                if ($order == null) {
+                    throw new Exception('Created order is null');
+                }
+                $this->notify_order_stakeholders($order);
+
+                return Response::Ok($order, 'Order resource created successfully');
+            } else {
+                throw new Exception("We're not able to recognize your identity");
+            }
+        } catch (\Exception $e) {
+            return Response::Error('Failed to create new order' . $e->getMessage());
+        }
     }
 
-    private function add_order($data)
+    private function notify_order_stakeholders(Order $order)
     {
-        try {
-            $data['status_id'] = OrderStatus::make(OrderStatus::pending, auth()->id())['id'];
-            $data['client_id'] = ClientInformation::make($data['client'])['id'];
+        $this->notifier->push_notification_to_administrators([
+            "title" => "New Order Submission",
+            "body" => "Client '" . $order->client->name . "' submitted new order (" . $order->id . ")",
+            "payload" => $order['id'],
+        ]);
 
-            if (array_key_exists('promo_code', $data) && $data['promo_code'] != null) {
-                $data['promo_code_id'] = PromoCode::all()->where('code', '=', $data['promo_code'])->first()['id'];
-            }
-
-            $order = Order::create($data);
-            $order->set_products($data['products']);
-
-            if ($order == null) {
-                Response::Error('Failed to create new order');
-            }
-
-
-            NotificationController::notify_all_admins([
-                "title" => "New Order Submission",
-                "body" => "Client '" . $data['client']['name'] . "' submitted new order (" . $order['id'] . ")",
-                "payload" => $order['id'],
-            ]);
-
-            return Response::Ok($order, 'Order resource created successfully');
-        } catch (\Exception $e) {
-            return Response::Error('Failed to create new order');
-        }
+        $this->notifier->push_notification_to_user($order->user()->first(), [
+            "title" => "Order Status",
+            "body" => "Dear Mr/Madam " . $order->client->name . ", Your order submitted successfully",
+            "payload" => $order['id'],
+        ]);
     }
 
     /**
@@ -177,7 +233,7 @@ class OrderController extends Controller
      */
     public function update_status(Request $request, Order $order)
     {
-        $status = $order->status()->get()->first()['title'];
+        $status = $order->status()->title;
         if ($status == OrderStatus::canceled || $status == OrderStatus::rejected) {
             return Response::Error('Order status cannot be changed since it is canceled or rejected');
         }
@@ -192,6 +248,12 @@ class OrderController extends Controller
         try {
             $order['status_id'] = OrderStatus::make($data['status'], auth()->id())['id'];
             $order->save();
+
+            $this->notifier->push_notification_to_user($order->user()->first(), [
+                "title" => "Order Status Updated",
+                "body" => "Dear Mr/Madam " . $order->client->name . ", Your order is " . $status . " now.",
+                "payload" => $order['id'],
+            ]);
 
             return Response::Ok($order, 'Order\'s status updated successfully');
         } catch (\Throwable $th) {
@@ -229,12 +291,12 @@ class OrderController extends Controller
         $orders = Order::query()->with('client');
 
         foreach ($orders as $i => $order) {
-            
+
             $province = Province::query()
                 ->where('en_name', '=', $order['client']['province'])
                 ->orWhere('ar_name', '=', $order['client']['province'])
                 ->first();
-    
+
             if ($province == null) {
                 throw new Exception('Chosen province does not match ' . $order['client']['province'] . ' from client:' . $order['client']['name']);
             }

@@ -35,8 +35,13 @@ class RoleSeeder extends Seeder
             "description" => "orders management only allowed"
         ];
 
+        $client = [
+            "name" => "client",
+            "description" => "browse products and make orders"
+        ];
+
         $roles = [];
-        array_push($roles, $administrator, $tester, $user);
+        array_push($roles, $administrator, $tester, $user, $client);
 
         return $roles;
     }

@@ -2,32 +2,29 @@
 
 namespace App\Models;
 
-use Exception;
 use Illuminate\Database\Eloquent\Model;
 
 class ClientInformation extends Model
 {
-    public static function make($data): ClientInformation
+    public static function make_from_user(Order $order, User $user = null, array $request): ClientInformation
     {
-        $provinceName = $data['province'];
-        $province = Province::query()
-            ->where('en_name', '=', $provinceName)
-            ->orWhere('ar_name', '=', $provinceName)
-            ->first();
+        $client = new ClientInformation;
 
-        if($province == null)
-        {
-            throw new Exception('Chosen province does not match');
-        }
-        
-        $normalizedProvinceName = $province['en_name'];
-        $data['province'] = $normalizedProvinceName;
+        $client->name = array_key_exists('name', $request) ? $request['name'] : $user->first_name . ' ' . $user->last_name;
+        $client->phone = array_key_exists('phone', $request) ? $request['phone'] : $user->phone_number;
+        $client->province_id = array_key_exists('province_id', $request) ? $request['province_id'] : $user->province_id;
+        $client->address = array_key_exists('address', $request) ? $request['address'] : $user->address;
+        $client->notes = array_key_exists('notes', $request) ? $request['notes'] : null;
 
-        return ClientInformation::create($data);
+        $order->client()->save($client);
+        return $client;
     }
 
 
-    protected $fillable = [
-        'name', 'phone', 'province', 'address', 'notes', 'user_id'
-    ];
+    protected $fillable = ['name', 'phone', 'province_id', 'address', 'notes', 'order_id'];
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'id', 'role_id');
+    }
 }

@@ -19,23 +19,23 @@ class OrderStatus extends Model
     }
 
 
-    public static function make(int $title, $changed_by, OrderStatus $current = null): OrderStatus
+    public static function make_order_status(Order $order, int $title, string $changed_by): OrderStatus
     {
-        $data = [
-            'title' => $title,
-            'changed_by' => $changed_by
-        ];
-        if ($current != null) {
-            $data['previous_id'] = $current['id'];
-        }
+        $status = new OrderStatus;
 
-        return OrderStatus::create($data);
+        $status->title = $title;
+        $status->changed_by = $changed_by;
+        $status->changed_at = now();
+        $status->previous_id = $order->status()->id ?? null;
+
+        $order->statuses()->save($status);
+        return $status;
     }
 
     public $timestamps = false;
 
     protected $fillable = [
-        'title', 'changed_at', 'changed_by', 'previous_id'
+        'order_id', 'title', 'changed_at', 'changed_by', 'previous_id'
     ];
 
     protected $casts = [

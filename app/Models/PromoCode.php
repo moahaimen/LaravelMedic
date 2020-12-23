@@ -18,6 +18,11 @@ class PromoCode extends Model
         return [0, 1];
     }
 
+    public static function getPromoCodeId(string $code): int
+    {
+        return PromoCode::all()->where('code', '=', $code)->first()->id;
+    }
+
 
     protected $fillable = [
         'code', 'type', 'discount', 'created_at', 'updated_at', 'start_at', 'finish_at'

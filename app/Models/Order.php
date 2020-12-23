@@ -8,43 +8,37 @@ use Illuminate\Support\Facades\DB;
 class Order extends Model
 {
     public const filterable = [
-        'status.title', 'client.name', 'client.phone', 'client.province', 'client.address', 'client.notes'
+        'client.name', 
+        'client.phone', 
+        'client.address',
+        'statuses.title'
     ];
 
-    protected $fillable = [
-        'status_id', 'client_id', 'promo_code_id'
-    ];
     public $timestamps = false;
+    protected $fillable = ['promo_code_id', 'user_id'];
+
+    /**
+     * Begin of Model relations defnition
+     */
 
     public function status()
     {
-        return $this->belongsTo(OrderStatus::class);
+        return $this->statuses()->first();
     }
 
-    public function delete_statuses()
+    public function statuses()
     {
-        $current = $this->status()->get()[0];
-        // dd($current);
+        return $this->hasMany(OrderStatus::class)->orderBy('changed_at');
+    }
 
-        while($current != null) {
-            $previous = $current->previous();
-            // dd($previous);
-            $current = $previous;
-            if(!$current->delete()) {
-                return false;
-            }
-        }
-        return true;
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function client()
     {
-        return $this->belongsTo(ClientInformation::class, 'client_id', 'id');
-    }
-
-    public function delete_client()
-    {
-        // return ClientInformation::where('id', '=', $this->client_id)->delete();
+        return $this->hasOne(ClientInformation::class);
     }
 
     public function promo_code()
@@ -62,9 +56,43 @@ class Order extends Model
         return $this->hasMany(OrderProduct::class, 'order_id');
     }
 
+    /**
+     * Model relations defnition end
+     */
+
+
+    /**
+     * Begin of Model methods defnition
+     */
+
+    public function delete_statuses()
+    {
+        try {
+            $this->statuses()->delete();
+            return true;
+        } catch (\Throwable $th) {
+            return false;
+        }
+    }
+
+    public function delete_client()
+    {
+        try {
+            $this->client()->delete();
+            return true;
+        } catch (\Throwable $th) {
+            return false;
+        }
+    }
+
     public function delete_products()
     {
-        return OrderProduct::where('order_id', '=', $this->id)->delete();
+        try {
+            $this->order_products()->delete();
+            return true;
+        } catch (\Throwable $th) {
+            return false;
+        }
     }
 
     public function set_products(array $data)
@@ -73,7 +101,7 @@ class Order extends Model
 
         $this->products()->detach();
 
-        foreach ($data as $key => $element) {
+        foreach ($data as $k => $element) {
             $product_id = $element['product_id'];
             $order_product = $products->find($product_id);
 

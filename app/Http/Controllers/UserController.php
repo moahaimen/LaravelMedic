@@ -72,7 +72,10 @@ class UserController extends Controller
             'password' => 'nullable|min:8|confirmed',
             'role_id' => 'nullable|exists:roles,id',
             // status must be in UserStatus
-            'status_id' => 'nullable|in:0,1'
+            'status_id' => 'nullable|in:0,1',
+            'phone_number' => 'nullable',
+            'address' => 'nullable',
+            'province_id' => 'nullable|numeric|exists:provinces,id',
         ]);
 
         if (array_key_exists('password', $data)) {

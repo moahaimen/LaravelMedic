@@ -1,22 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Services;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 
-class Controller extends BaseController
+abstract class Service
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-
-
     protected function filter(Builder $builder, Request $request, array $fields): Builder
     {
         try {
@@ -31,7 +21,6 @@ class Controller extends BaseController
                     $builder = $builder->whereHas($relation, function ($query) use ($column, $q) {
                         return $query->where($column, 'ILIKE', "%{$q}%");
                     });
-
                 } else {
                     $builder = $builder->where($field, 'ILIKE', "%{$q}%");
                 }

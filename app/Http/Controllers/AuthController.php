@@ -22,7 +22,7 @@ class AuthController extends Controller
             'user_name' => 'required|unique:users',
             'first_name' => 'required|min:3',
             'last_name' => 'required|min:3',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users',
             'password' => 'required|min:8|confirmed',
             'role_id' => 'required|exists:roles,id'
         ]);
@@ -41,8 +41,8 @@ class AuthController extends Controller
             }
 
             return $this->composeResponse($user);
-        } catch (\Throwable $th) {
-            return Response::Error("User creation failed");
+        } catch (\Exception $e) {
+            return Response::Error($e->getMessage());
         }
     }
 

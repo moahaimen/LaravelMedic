@@ -1,10 +1,5 @@
 <?php
 
-use App\Http\Controllers\NotificationController;
-use App\Models\User;
-use App\Notifications\PushOrder;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,53 +27,39 @@ Route::prefix('/auth')->group(function () {
             Route::get('/logout', 'AuthController@logout');
 
             Route::post('/fcmToken', 'UserFcmTokenController@add');
-
-            Route::prefix('/orders')->group(function () {
-                Route::get('/', 'OrderController@get');
-                Route::post('/', 'OrderController@create');
-                Route::put('/{order}', 'OrderController@update');
-            });
         });
 });
 
-Route::middleware('auth:api')->prefix('/users')->group(function () {
+Route::middleware(array('auth:api', 'authorize:administrator'))->prefix('/users')->group(function () {
     Route::get('/', 'UserController@get');
     Route::post('/', 'UserController@create');
     Route::put('/{user}', 'UserController@update');
     Route::delete('/{user}', 'UserController@delete');
 });
 
-Route::prefix('/roles')->group(function () {
+Route::middleware(array('auth:api', 'authorize:administrator'))->prefix('/roles')->group(function () {
 
-    // fetch allowed to public
     Route::get('/', 'RoleController@get');
+    Route::post('/', 'RoleController@create');
 
-    // create, update and delete are allowed only for authenticated and authorized
-    Route::middleware('auth:api')->post('/', 'RoleController@create');
+    Route::prefix('/{role}')->group(function () {
 
-    Route::prefix('/{role}')
-        ->middleware('auth:api')
-        ->group(function () {
+        Route::put('/', 'RoleController@update');
+        Route::delete('/', 'RoleController@delete');
 
-            Route::put('/', 'RoleController@update');
-            Route::delete('/', 'RoleController@delete');
-
-            Route::prefix('/permissions')->group(function () {
-                Route::get('/', 'RolePermissionController@fetch');
-                Route::put('/', 'RolePermissionController@assign');
-            });
+        Route::prefix('/permissions')->group(function () {
+            Route::get('/', 'RolePermissionController@fetch');
+            Route::put('/', 'RolePermissionController@assign');
         });
+    });
 });
 
-Route::prefix('/permissions')->group(function () {
+Route::middleware(array('auth:api', 'authorize:administrator'))->prefix('/permissions')->group(function () {
 
-    // fetch allowed to public
     Route::get('/', 'PermissionController@get');
-
-    // create, update and delete are allowed only for authenticated and authorized
-    Route::middleware('auth:api')->post('/', 'PermissionController@create');
-    Route::middleware('auth:api')->put('/{permission}', 'PermissionController@update');
-    Route::middleware('auth:api')->delete('/{permission}', 'PermissionController@delete');
+    Route::post('/', 'PermissionController@create');
+    Route::put('/{permission}', 'PermissionController@update');
+    Route::delete('/{permission}', 'PermissionController@delete');
 });
 
 
@@ -94,9 +75,11 @@ Route::prefix('/brands')->group(function () {
     Route::get('/', 'BrandController@get');
 
     // create, update and delete are allowed only for authenticated and authorized
-    Route::middleware('auth:api')->post('/', 'BrandController@create');
-    Route::middleware('auth:api')->put('/{brand}', 'BrandController@update');
-    Route::middleware('auth:api')->delete('/{brand}', 'BrandController@delete');
+    Route::middleware(array('auth:api', 'authorize:administrator'))->group(function () {
+        Route::post('/', 'BrandController@create');
+        Route::put('/{brand}', 'BrandController@update');
+        Route::delete('/{brand}', 'BrandController@delete');
+    });
 });
 
 Route::prefix('/categories')->group(function () {
@@ -105,9 +88,11 @@ Route::prefix('/categories')->group(function () {
     Route::get('/', 'CategoryController@get');
 
     // create, update and delete are allowed only for authenticated and authorized
-    Route::middleware('auth:api')->post('/', 'CategoryController@create');
-    Route::middleware('auth:api')->put('/{category}', 'CategoryController@update');
-    Route::middleware('auth:api')->delete('/{category}', 'CategoryController@delete');
+    Route::middleware(array('auth:api', 'authorize:administrator'))->group(function () {
+        Route::post('/', 'CategoryController@create');
+        Route::put('/{category}', 'CategoryController@update');
+        Route::delete('/{category}', 'CategoryController@delete');
+    });
 });
 
 Route::prefix('/products')->group(function () {
@@ -117,24 +102,33 @@ Route::prefix('/products')->group(function () {
     Route::get('/keys', 'ProductController@getByKeys');
 
     // create, update and delete are allowed only for authenticated and authorized
-    Route::middleware('auth:api')->post('/', 'ProductController@create');
-    Route::middleware('auth:api')->put('/{product}', 'ProductController@update');
-    Route::middleware('auth:api')->delete('/{product}', 'ProductController@delete');
+    Route::middleware(array('auth:api', 'authorize:administrator'))->group(function () {
+        Route::post('/', 'ProductController@create');
+        Route::put('/{product}', 'ProductController@update');
+        Route::delete('/{product}', 'ProductController@delete');
+    });
 });
 
 
 Route::prefix('/orders')->group(function () {
-    Route::post('/', 'OrderController@create');
 
-    Route::middleware('auth:api')->get('/', 'OrderController@get');
-    Route::middleware('auth:api')->post('/fixOrdersProvinces', 'OrderController@fixOrdersProvinces');
-    Route::middleware('auth:api')->put('/{order}', 'OrderController@update');
-    Route::middleware('auth:api')->put('/{order}/status', 'OrderController@update_status');
-    Route::middleware('auth:api')->delete('/{order}', 'OrderController@delete');
-});
+    Route::middleware(array('auth:api', 'authorize:administrator'))->group(function () {
+        Route::post('/', 'OrderController@create');
 
-Route::prefix('/orders2')->group(function () {
-    Route::get('/', 'OrderController@create2');
+        Route::get('/', 'OrderController@get');
+        Route::post('/fixOrdersProvinces', 'OrderController@fix_orders_provinces');
+        Route::put('/{order}', 'OrderController@update');
+        Route::put('/{order}/status', 'OrderController@update_status');
+        Route::delete('/{order}', 'OrderController@delete');
+    });
+
+    Route::middleware(array('auth:api', 'authorize:client'))
+        ->prefix('/me')
+        ->group(function () {
+
+            Route::get('/', 'OrderController@getUserOrders');
+            Route::post('/', 'OrderController@createUserOrder');
+        });
 });
 
 Route::prefix('/promocodes')->group(function () {
@@ -146,25 +140,34 @@ Route::prefix('/promocodes')->group(function () {
     Route::get('/{code}', 'PromoCodeController@check_status');
 });
 
-Route::prefix('/notifications')->group(function () {
+Route::middleware(array('auth:api', 'authorize:administrator'))
+    ->prefix('/notifications')
+    ->group(function () {
 
-    Route::middleware('auth:api')->post('/', 'NotificationController@push');
-    Route::post('/test', 'NotificationController@test');
-    Route::middleware('auth:api')->post('/resetFcmTokens', 'UserFcmTokenController@reset');
-});
+        Route::post('/', 'NotificationController@push');
+        Route::post('/{username}', 'NotificationController@push_to_user');
+        Route::post('/test', 'NotificationController@test');
+        Route::post('/resetFcmTokens', 'UserFcmTokenController@reset');
+    });
 
 Route::prefix('/provinces')->group(function () {
 
     Route::get('/', 'ProvinceController@get');
-    Route::middleware('auth:api')->post('/', 'ProvinceController@create');
-    Route::middleware('auth:api')->put('/{province}', 'ProvinceController@update');
-    Route::middleware('auth:api')->delete('/{province}', 'ProvinceController@delete');
+
+    Route::middleware(array('auth:api', 'authorize:administrator'))->group(function() {
+        Route::post('/', 'ProvinceController@create');
+        Route::put('/{province}', 'ProvinceController@update');
+        Route::delete('/{province}', 'ProvinceController@delete');
+    });
 });
 
 Route::prefix('/contactUs')->group(function () {
 
     Route::get('/', 'ContactUsController@get');
-    Route::middleware('auth:api')->post('/', 'ContactUsController@create');
-    Route::middleware('auth:api')->put('/{contactUs}', 'ContactUsController@update');
-    Route::middleware('auth:api')->delete('/{contactUs}', 'ContactUsController@delete');
+
+    Route::middleware(array('auth:api', 'authorize:administrator'))->group(function() {
+        Route::post('/', 'ContactUsController@create');
+        Route::put('/{contactUs}', 'ContactUsController@update');
+        Route::delete('/{contactUs}', 'ContactUsController@delete');
+    });
 });
