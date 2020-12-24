@@ -76,10 +76,10 @@ class OrderController extends Controller
             'products' => 'required|array|min:1',
             'products.*.quantity' => 'required|numeric|min:1',
             'products.*.product_id' => 'required|numeric|exists:products,id',
-            'client.name' => 'required_unless:user_id|string|min:3',
-            'client.phone' => 'required_unless:user_id|string',
-            'client.province_id' => 'required_unless:user_id|numeric|exists:provinces,id',
-            'client.address' => 'required_unless:user_id|string|min:3',
+            'client.name' => 'required|string|min:3',
+            'client.phone' => 'required|string',
+            'client.province_id' => 'required|numeric|exists:provinces,id',
+            'client.address' => 'required|string|min:3',
             'client.notes' => 'nullable|string|min:3',
             'client.user_id' => 'nullable|numeric|exists:users,id',
             'promo_code' => 'nullable|string|exists:promo_codes,code',
@@ -88,7 +88,7 @@ class OrderController extends Controller
         try {
             $createData = [];
 
-            $createData['user_id'] = $data['client']['id'];
+            $createData['user_id'] = $data['client']['user_id'];
             if (array_key_exists('promo_code', $data) && $data['promo_code'] != null) {
                 $createData['promo_code_id'] = PromoCode::getPromoCodeId($data['promo_code']);
             }
@@ -170,11 +170,14 @@ class OrderController extends Controller
             "payload" => $order['id'],
         ]);
 
-        $this->notifier->push_notification_to_user($order->user()->first(), [
-            "title" => "Order Status",
-            "body" => "Dear Mr/Madam " . $order->client->name . ", Your order submitted successfully",
-            "payload" => $order['id'],
-        ]);
+        $user = $order->user()->first();
+        if($user instanceof User) {
+            $this->notifier->push_notification_to_user($user, [
+                "title" => "Order Status",
+                "body" => "Dear Mr/Madam " . $order->client->name . ", Your order submitted successfully",
+                "payload" => $order['id'],
+            ]);
+        }
     }
 
     /**
@@ -233,31 +236,24 @@ class OrderController extends Controller
      */
     public function update_status(Request $request, Order $order)
     {
-        $status = $order->status()->title;
-        if ($status == OrderStatus::canceled || $status == OrderStatus::rejected) {
-            return Response::Error('Order status cannot be changed since it is canceled or rejected');
-        }
-        if ($status == OrderStatus::deliveried) {
-            return Response::Error('Order status cannot be changed since it is deliveried');
-        }
-
-        $data = $request->validate([
-            'status' => 'required|numeric|gt:' . $status,
-        ]);
-
         try {
-            $order['status_id'] = OrderStatus::make($data['status'], auth()->id())['id'];
-            $order->save();
+            $status = $order->status()->title;
+            if ($status == OrderStatus::canceled || $status == OrderStatus::rejected) {
+                return Response::Error('Order status cannot be changed since it is canceled or rejected');
+            }
+            if ($status == OrderStatus::deliveried) {
+                return Response::Error('Order status cannot be changed since it is deliveried');
+            }
 
-            $this->notifier->push_notification_to_user($order->user()->first(), [
-                "title" => "Order Status Updated",
-                "body" => "Dear Mr/Madam " . $order->client->name . ", Your order is " . $status . " now.",
-                "payload" => $order['id'],
+            $data = $request->validate([
+                'status' => 'required|numeric|gt:' . $status,
             ]);
+
+            $this->order->changeOrderStatus($order, $data['status']);
 
             return Response::Ok($order, 'Order\'s status updated successfully');
         } catch (\Throwable $th) {
-            return Response::Error('Failed to update order status');
+            return Response::Error($th->getMessage() ?? 'Failed to update order status');
         }
     }
 

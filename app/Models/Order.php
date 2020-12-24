@@ -28,7 +28,7 @@ class Order extends Model
 
     public function statuses()
     {
-        return $this->hasMany(OrderStatus::class)->orderBy('changed_at');
+        return $this->hasMany(OrderStatus::class)->orderBy('changed_at', 'desc');
     }
 
     public function user()

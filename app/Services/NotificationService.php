@@ -76,7 +76,7 @@ class NotificationService
             $data['push_type'] = 'individual';
             $data['receiver_id'] = $token;
 
-            $this->notifier->push_notification($data);
+            $this->push_notification($data);
         }
         return true;
     }
@@ -92,7 +92,7 @@ class NotificationService
             $data['push_type'] = 'individual';
             $data['receiver_id'] = $token;
 
-            $this->notifier->push_notification($data);
+            $this->push_notification($data);
         }
         return true;
     }
