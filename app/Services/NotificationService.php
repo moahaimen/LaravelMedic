@@ -10,7 +10,7 @@ use App\Models\UserFcmToken;
 
 class NotificationService
 {
-    public static function push_notification(array $data)
+    public function push_notification(array $data)
     {
         $notification_payload = null;
         if (array_key_exists('payload', $data)) {
