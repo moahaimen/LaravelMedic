@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class OrderService extends Service
 {
-    var NotificationService $notifier;
+    protected $notifier;
 
     public function __construct(NotificationService $notifier)
     {
