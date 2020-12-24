@@ -17,8 +17,8 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    var OrderService $order;
-    var NotificationService $notifier;
+    protected OrderService $order;
+    protected NotificationService $notifier;
 
     public function __construct(NotificationService $notifier, OrderService $order)
     {
