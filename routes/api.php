@@ -116,7 +116,6 @@ Route::prefix('/orders')->group(function () {
         Route::post('/', 'OrderController@create');
 
         Route::get('/', 'OrderController@get');
-        Route::post('/fixOrdersProvinces', 'OrderController@fix_orders_provinces');
         Route::put('/{order}', 'OrderController@update');
         Route::put('/{order}/status', 'OrderController@update_status');
         Route::delete('/{order}', 'OrderController@delete');

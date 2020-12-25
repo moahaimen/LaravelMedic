@@ -2,9 +2,14 @@
 
 namespace App\Services;
 
+use App\Http\Requests\OrderCreateForUserRequest;
+use App\Http\Requests\OrderCreateRequest;
+use App\Models\ClientInformation;
 use App\Models\Order;
 use App\Models\OrderStatus;
+use App\Models\PromoCode;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 
 class OrderService extends Service
@@ -14,6 +19,54 @@ class OrderService extends Service
     public function __construct(NotificationService $notifier)
     {
         $this->notifier = $notifier;
+    }
+
+    public function createOrder(OrderCreateRequest $request): Order
+    {
+        $data = $request->all();
+        $createData = [];
+
+        $createData['user_id'] = $data['client']['user_id'];
+        if (array_key_exists('promo_code', $data) && $data['promo_code'] != null) {
+            $createData['promo_code_id'] = PromoCode::getPromoCodeId($data['promo_code']);
+        }
+        $order = Order::create($createData);
+
+        OrderStatus::make_order_status($order, OrderStatus::pending, auth()->id());
+        ClientInformation::make_from_user($order, null, $data['client']);
+
+        $order->set_products($data['products']);
+
+        if ($order == null) {
+            throw new Exception('Created order is null');
+        }
+        $this->notifyOrderSides($order);
+
+        return $order;
+    }
+
+    public function createUserOrder(User $user, OrderCreateForUserRequest $request): Order
+    {
+        $data = $request->all();
+        $createData = [];
+
+        $createData['user_id'] = $user->id;
+        if (array_key_exists('promo_code', $data) && $data['promo_code'] != null) {
+            $createData['promo_code_id'] = PromoCode::getPromoCodeId($data['promo_code']);
+        }
+        $order = Order::create($createData);
+
+        OrderStatus::make_order_status($order, OrderStatus::pending, $user->id);
+        ClientInformation::make_from_user($order, $user, $data['client'] ?? []);
+
+        $order->set_products($data['products']);
+
+        if ($order == null) {
+            throw new Exception('Created order is null');
+        }
+        $this->notifyOrderSides($order);
+
+        return $order;
     }
 
     public function getOrders(Request $request)
@@ -26,7 +79,8 @@ class OrderService extends Service
                 'order_products',
                 'order_products.product',
                 'order_products.price',
-            ]);
+            ])
+            ->orderBy('id');
         $orders = $this->filter($orders, $request, Order::filterable);
         $orders = $orders->paginate(15);
 
@@ -44,10 +98,30 @@ class OrderService extends Service
                 'order_products.product',
                 'order_products.price',
             ])
+            ->orderBy('id')
             ->where('user_id', '=', $user->id)
             ->get();
 
         return $orders;
+    }
+
+    public function updateOrder(Order $order, array $data): Order
+    {
+        if (array_key_exists('products', $data)) {
+            $order->set_products($data['products']);
+        }
+
+        if (array_key_exists('client', $data)) {
+            $info = ClientInformation::find($order['client_id']);
+
+            $info->update($data['client']);
+            $info->save();
+        }
+
+        if (!$order->update($data)) {
+            throw new Exception('Failed to update order ' . $order['id']);
+        }
+        return $order;
     }
 
     public function changeOrderStatus(Order $order, int $status)
@@ -64,5 +138,38 @@ class OrderService extends Service
             $this->notifier->push_notification_to_user($user, $data);
         }
         return $order;
+    }
+
+    public function deleteOrder(Order $order): Order {
+        // 1- Delete products related to
+        if (!$order->delete_products()) {
+            throw new Exception('Failed to delete order ' . $order['id'] . ' (1)');
+        }
+
+        // 2- Delete the entity
+        if (!$order->delete()) {
+            throw new Exception('Failed to delete order ' . $order['id'] . ' (2)');
+        }
+        return $order;
+    }
+
+    private function notifyOrderSides(Order $order)
+    {
+        $data1 = [
+            "title" => "New Order Submission",
+            "body" => "Client '" . $order->client->name . "' submitted new order (" . $order->id . ")",
+            "payload" => $order['id'],
+        ];
+        $this->notifier->push_notification_to_administrators($data1);
+
+        $user = $order->user()->first();
+        if ($user instanceof User) {
+            $data2 = [
+                "title" => "Order Status",
+                "body" => "Dear Mr/Madam " . $order->client->name . ", Your order submitted successfully",
+                "payload" => $order['id'],
+            ];
+            $this->notifier->push_notification_to_user($user, $data2);
+        }
     }
 }
