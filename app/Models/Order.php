@@ -7,15 +7,16 @@ use Illuminate\Support\Facades\DB;
 
 class Order extends Model
 {
-    public const filterable = [
-        'client.name', 
-        'client.phone', 
-        'client.address',
-        'statuses.title'
-    ];
+    public const filterable = ['client.name', 'client.phone', 'client.address'];
 
     public $timestamps = false;
-    protected $fillable = ['promo_code_id', 'user_id'];
+    protected $fillable = ['promo_code_id', 'user_id', 'exchange_id'];
+
+    protected $casts = [
+        'user_id' => 'int',
+        'promo_code_id' => 'int',
+        'exchange_id' => 'int',
+    ];
 
     /**
      * Begin of Model relations defnition
@@ -48,12 +49,17 @@ class Order extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class, OrderProduct::class, 'order_id');
+        return $this->belongsToMany(Product::class, OrderProduct::class, 'order_id')->withPivot(['quantity', 'price_id']);
     }
 
     public function order_products()
     {
         return $this->hasMany(OrderProduct::class, 'order_id');
+    }
+
+    public function exchange()
+    {
+        return $this->belongsTo(Exchange::class);
     }
 
     /**
@@ -95,29 +101,17 @@ class Order extends Model
         }
     }
 
-    public function set_products(array $data)
+    public function setProducts(array $elements): void
     {
-        $products = $this->order_products()->get();
-
         $this->products()->detach();
 
-        foreach ($data as $k => $element) {
-            $product_id = $element['product_id'];
-            $order_product = $products->find($product_id);
-
-            if ($order_product != null) {
-                $order_product->update([
-                    'qunatity' => $element['quantity'],
-                ]);
-            } else {
-
-                DB::table('order_products')->insert([
-                    'order_id' => $this->id,
-                    'product_id' => $product_id,
-                    'quantity' => $element['quantity'],
-                    'price_id' => Product::find($product_id)->price()->get()[0]['id'],
-                ]);
-            }
+        foreach ($elements as $e) {
+            $product_id = $e['product_id'];
+            $data = [
+                'quantity' => $e['quantity'],
+                'price_id' => $e['product']['price_id'],
+            ];
+            $this->products()->attach($product_id, $data);
         }
     }
 }

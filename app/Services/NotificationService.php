@@ -72,7 +72,7 @@ class NotificationService
         $admins = array_column(User::all()->where('role_id', '=', 1)->toArray(), 'id');
         $tokens = array_column(UserFcmToken::all()->whereIn('user_id', $admins)->toArray(), 'token');
 
-        foreach ($tokens as $i => $token) {
+        foreach ($tokens as $token) {
             $data['push_type'] = 'individual';
             $data['receiver_id'] = $token;
 
@@ -83,12 +83,12 @@ class NotificationService
 
     public function push_notification_to_user(User $user, $data)
     {
-        if($user == null) {
+        if ($user == null) {
             return;
         }
         $tokens = array_column(UserFcmToken::all()->where('user_id', '=', $user->id)->toArray(), 'token');
 
-        foreach ($tokens as $i => $token) {
+        foreach ($tokens as $token) {
             $data['push_type'] = 'individual';
             $data['receiver_id'] = $token;
 

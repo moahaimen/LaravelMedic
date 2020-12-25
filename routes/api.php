@@ -99,7 +99,7 @@ Route::prefix('/products')->group(function () {
 
     // fetch allowed to public
     Route::get('/', 'ProductController@get');
-    Route::get('/keys', 'ProductController@getByKeys');
+    Route::get('/cart', 'ProductController@getCartProducts');
 
     // create, update and delete are allowed only for authenticated and authorized
     Route::middleware(array('auth:api', 'authorize:administrator'))->group(function () {
@@ -153,18 +153,27 @@ Route::prefix('/provinces')->group(function () {
 
     Route::get('/', 'ProvinceController@get');
 
-    Route::middleware(array('auth:api', 'authorize:administrator'))->group(function() {
+    Route::middleware(array('auth:api', 'authorize:administrator'))->group(function () {
         Route::post('/', 'ProvinceController@create');
         Route::put('/{province}', 'ProvinceController@update');
         Route::delete('/{province}', 'ProvinceController@delete');
     });
 });
 
+Route::middleware(array('auth:api', 'authorize:administrator'))
+    ->prefix('/exchange')
+    ->group(function () {
+
+        Route::get('/', 'ExchangeController@get');
+        Route::post('/', 'ExchangeController@create');
+        Route::delete('/{exchange}', 'ExchangeController@delete');
+    });
+
 Route::prefix('/contactUs')->group(function () {
 
     Route::get('/', 'ContactUsController@get');
 
-    Route::middleware(array('auth:api', 'authorize:administrator'))->group(function() {
+    Route::middleware(array('auth:api', 'authorize:administrator'))->group(function () {
         Route::post('/', 'ContactUsController@create');
         Route::put('/{contactUs}', 'ContactUsController@update');
         Route::delete('/{contactUs}', 'ContactUsController@delete');

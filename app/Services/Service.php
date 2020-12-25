@@ -10,7 +10,7 @@ abstract class Service
     protected function filter(Builder $builder, Request $request, array $fields): Builder
     {
         try {
-            foreach ($fields as $i => $field) {
+            foreach ($fields as $field) {
                 $q = $request->input(str_replace('.', '_', $field));
                 $queries = explode('.', $field);
 

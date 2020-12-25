@@ -3,13 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Http\Response;
-use App\Models\Price;
 use App\Models\Product;
+use App\Services\PriceService;
 use Exception;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    protected $price;
+
+    public function __construct(PriceService $price)
+    {
+        $this->price = $price;
+    }
+
+
     /**
      * Fetch a list of the resource.
      *
@@ -32,7 +40,7 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getByKeys(Request $request)
+    public function getCartProducts(Request $request)
     {
         $q = $request->input('q');
         $v = str_getcsv($q);
@@ -40,9 +48,9 @@ class ProductController extends Controller
         $products = Product::query()
             ->with(['brand', 'category', 'price', 'price.previous', 'attachments'])
             ->whereKey($v);
-
         $products = $products->get();
-        return Response::Ok($products, 'Products list fetched successfully');
+
+        return Response::Ok($products, 'Cart products fetched successfully');
     }
 
     /**
@@ -68,10 +76,8 @@ class ProductController extends Controller
             'attachments.*' => 'required|numeric|exists:attachments,id',
         ]);
 
-        // dd($data);
-
         try {
-            $data['price_id'] = Price::make($data['price'], false)['id'];
+            $data['price_id'] = $this->price->create($data['price'])->id;
 
             $product = Product::create($data);
             $product->set_attachments($data['attachments']);
@@ -81,7 +87,6 @@ class ProductController extends Controller
             }
             return Response::Ok($product, 'Product resource created successfully');
         } catch (\Exception $e) {
-            // throw $e;
             Response::Error('Failed to create new product');
         }
     }
@@ -115,17 +120,12 @@ class ProductController extends Controller
                 $product->set_attachments($data['attachments']);
             }
 
-            $price = $product->price()->get()->first();
-            if ($price instanceof Price && array_key_exists('price', $data)) {
-                if ($price['value'] != $data['price']) {
-                    $data['price_id'] = Price::make($data['price'], $data['price_is_discount'], $price)['id'];
-                } else if (array_key_exists('price_is_discount', $data) && $price->previous()->get()->first() instanceof Price) {
-                    $price->update(['is_discount' => $data['price_is_discount']]);
-                } else return Response::Error("To mark price as Discount you must change it first");
+            if (array_key_exists('price', $data)) {
+                $this->price->changeProductPrice($product, $data['price'], $data['price_is_discount']);
             }
 
             if (!$product->update($data)) {
-                return Response::Error('Failed to update product ' . $product['id']);
+                throw new Exception('Failed to update product ' . $product['id']);
             }
             return Response::Ok($product, 'Product resource updated successfully');
         } catch (\Exception $e) {

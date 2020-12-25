@@ -5,12 +5,15 @@ namespace App\Services;
 use App\Http\Requests\OrderCreateForUserRequest;
 use App\Http\Requests\OrderCreateRequest;
 use App\Models\ClientInformation;
+use App\Models\Exchange;
 use App\Models\Order;
 use App\Models\OrderStatus;
 use App\Models\PromoCode;
 use App\Models\User;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderService extends Service
 {
@@ -26,7 +29,8 @@ class OrderService extends Service
         $data = $request->all();
         $createData = [];
 
-        $createData['user_id'] = $data['client']['user_id'];
+        $createData['user_id'] = $data['user_id'];
+        $createData['exchange_id'] = Exchange::query()->orderBy('changed_at', 'DESC')->first()->id;
         if (array_key_exists('promo_code', $data) && $data['promo_code'] != null) {
             $createData['promo_code_id'] = PromoCode::getPromoCodeId($data['promo_code']);
         }
@@ -35,7 +39,7 @@ class OrderService extends Service
         OrderStatus::make_order_status($order, OrderStatus::pending, auth()->id());
         ClientInformation::make_from_user($order, null, $data['client']);
 
-        $order->set_products($data['products']);
+        $order->setProducts($data['products']);
 
         if ($order == null) {
             throw new Exception('Created order is null');
@@ -50,7 +54,10 @@ class OrderService extends Service
         $data = $request->all();
         $createData = [];
 
+
         $createData['user_id'] = $user->id;
+        $createData['exchange_id'] = Exchange::query()->orderBy('changed_at', 'DESC')->first()->id;
+
         if (array_key_exists('promo_code', $data) && $data['promo_code'] != null) {
             $createData['promo_code_id'] = PromoCode::getPromoCodeId($data['promo_code']);
         }
@@ -59,7 +66,7 @@ class OrderService extends Service
         OrderStatus::make_order_status($order, OrderStatus::pending, $user->id);
         ClientInformation::make_from_user($order, $user, $data['client'] ?? []);
 
-        $order->set_products($data['products']);
+        $order->setProducts($data['products']);
 
         if ($order == null) {
             throw new Exception('Created order is null');
@@ -76,11 +83,19 @@ class OrderService extends Service
                 'statuses',
                 'user', 'client',
                 'promo_code',
+                'exchange',
                 'order_products',
                 'order_products.product',
                 'order_products.price',
             ])
             ->orderBy('id');
+
+        $status = $request->input(str_replace('.', '_', 'status.title'));
+        if ($status != null) {
+            $orders = $orders->whereHas('statuses', function ($q) use ($status) {
+                return $q->where('title', '=', $status);
+            });
+        }
         $orders = $this->filter($orders, $request, Order::filterable);
         $orders = $orders->paginate(15);
 
@@ -94,6 +109,7 @@ class OrderService extends Service
                 'statuses',
                 'user', 'client',
                 'promo_code',
+                'exchange',
                 'order_products',
                 'order_products.product',
                 'order_products.price',
@@ -108,14 +124,18 @@ class OrderService extends Service
     public function updateOrder(Order $order, array $data): Order
     {
         if (array_key_exists('products', $data)) {
-            $order->set_products($data['products']);
+            $order->setProducts($data['products']);
         }
 
         if (array_key_exists('client', $data)) {
-            $info = ClientInformation::find($order['client_id']);
+            $info = $order->client()->first();
 
             $info->update($data['client']);
             $info->save();
+        }
+
+        if (array_key_exists('promo_code', $data)) {
+            $createData['promo_code_id'] = PromoCode::getPromoCodeId($data['promo_code']);
         }
 
         if (!$order->update($data)) {
@@ -140,7 +160,8 @@ class OrderService extends Service
         return $order;
     }
 
-    public function deleteOrder(Order $order): Order {
+    public function deleteOrder(Order $order): Order
+    {
         // 1- Delete products related to
         if (!$order->delete_products()) {
             throw new Exception('Failed to delete order ' . $order['id'] . ' (1)');

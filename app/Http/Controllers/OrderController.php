@@ -39,7 +39,8 @@ class OrderController extends Controller
             $orders = $this->order->getOrders($request);
             return Response::Ok($orders, 'Orders list fetched successfully');
         } catch (\Exception $e) {
-            return Response::Error('Failed to fetch orders list');
+            throw $e;
+            // return Response::Error('Failed to fetch orders list');
         }
     }
 
@@ -75,8 +76,8 @@ class OrderController extends Controller
     {
         try {
             $order = $this->order->createOrder($request);
-
             return Response::Ok($order, 'Order resource created successfully');
+
         } catch (\Exception $e) {
             return Response::Error('Failed to create new order');
         }

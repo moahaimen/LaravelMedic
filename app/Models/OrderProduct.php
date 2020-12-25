@@ -9,7 +9,8 @@ class OrderProduct extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'order_id', 'product_id', 'quantity', 'price_id'
+        'order_id', 'product_id', 'quantity', 
+        'price_id',
     ];
 
     protected $casts = [

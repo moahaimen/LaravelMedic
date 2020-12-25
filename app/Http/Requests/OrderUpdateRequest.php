@@ -13,7 +13,7 @@ class OrderUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -32,7 +32,7 @@ class OrderUpdateRequest extends FormRequest
             'client.province' => 'nullable|string|min:3',
             'client.address' => 'nullable|string|min:3',
             'client.notes' => 'nullable|string|min:3',
-            'client.user_id' => 'nullable|numeric|exists:users,id',
+            'user_id' => 'nullable|numeric|exists:users,id',
             'promo_code_id' => 'nullable|numeric|exists:promo_codes,id',
         ];
     }
