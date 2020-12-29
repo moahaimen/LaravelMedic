@@ -193,10 +193,17 @@ class OrderService extends Service
         if (!$order->delete_products()) {
             throw new Exception('Failed to delete order ' . $order['id'] . ' (1)');
         }
-
-        // 2- Delete the entity
-        if (!$order->delete()) {
+        // 2- Delete client related to
+        if (!$order->delete_client()) {
             throw new Exception('Failed to delete order ' . $order['id'] . ' (2)');
+        }
+        // 3- Delete statuses related to
+        if (!$order->delete_statuses()) {
+            throw new Exception('Failed to delete order ' . $order['id'] . ' (3)');
+        }
+        // 4- Delete the entity
+        if (!$order->delete()) {
+            throw new Exception('Failed to delete order ' . $order['id'] . ' (4)');
         }
         return $order;
     }
