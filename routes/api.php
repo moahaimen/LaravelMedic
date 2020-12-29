@@ -23,8 +23,9 @@ Route::prefix('/auth')->group(function () {
         ->prefix('/me')
         ->group(function () {
             Route::get('/', 'AuthController@me');
+            Route::put('/', 'AuthController@updateUser');
 
-            Route::get('/logout', 'AuthController@logout');
+            Route::post('/logout', 'AuthController@logout');
 
             Route::post('/fcmToken', 'UserFcmTokenController@add');
         });
@@ -112,12 +113,14 @@ Route::prefix('/products')->group(function () {
 
 Route::prefix('/orders')->group(function () {
 
+    Route::post('/', 'OrderController@createAnonymousOrder');
+
     Route::middleware(array('auth:api', 'authorize:administrator'))->group(function () {
         Route::post('/', 'OrderController@create');
 
         Route::get('/', 'OrderController@get');
         Route::put('/{order}', 'OrderController@update');
-        Route::put('/{order}/status', 'OrderController@update_status');
+        Route::put('/{order}/status', 'OrderController@updateStatus');
         Route::delete('/{order}', 'OrderController@delete');
     });
 
@@ -144,7 +147,7 @@ Route::middleware(array('auth:api', 'authorize:administrator'))
     ->group(function () {
 
         Route::post('/', 'NotificationController@push');
-        Route::post('/{username}', 'NotificationController@push_to_user');
+        Route::post('/{username}', 'NotificationController@pushToUser');
         Route::post('/test', 'NotificationController@test');
         Route::post('/resetFcmTokens', 'UserFcmTokenController@reset');
     });
@@ -160,14 +163,15 @@ Route::prefix('/provinces')->group(function () {
     });
 });
 
-Route::middleware(array('auth:api', 'authorize:administrator'))
-    ->prefix('/exchange')
-    ->group(function () {
-
+Route::prefix('/exchange')->group(function () {
+    Route::middleware(array('auth:api', 'authorize:administrator'))->group(function () {
         Route::get('/', 'ExchangeController@get');
         Route::post('/', 'ExchangeController@create');
         Route::delete('/{exchange}', 'ExchangeController@delete');
     });
+
+    Route::get('/current', 'ExchangeController@getCurrentExchange');
+});
 
 Route::prefix('/contactUs')->group(function () {
 

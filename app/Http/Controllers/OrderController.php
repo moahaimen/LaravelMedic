@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateAnonymousOrderRequest;
 use App\Http\Requests\OrderCreateForUserRequest;
 use App\Http\Requests\OrderCreateRequest;
 use App\Http\Requests\OrderUpdateRequest;
@@ -77,9 +78,25 @@ class OrderController extends Controller
         try {
             $order = $this->order->createOrder($request);
             return Response::Ok($order, 'Order resource created successfully');
-
         } catch (\Exception $e) {
             return Response::Error('Failed to create new order');
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function createAnonymousOrder(CreateAnonymousOrderRequest $request)
+    {
+        try {
+            $order = $this->order->createAnonymousOrder($request);
+            return Response::Ok($order, 'Your order created successfully');
+
+        } catch (\Exception $e) {
+            return Response::Error($e->getMessage() ?? 'Failed to create new order');
         }
     }
 
@@ -134,7 +151,7 @@ class OrderController extends Controller
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function update_status(Request $request, Order $order)
+    public function updateStatus(Request $request, Order $order)
     {
         try {
             $status = $order->status()->title;

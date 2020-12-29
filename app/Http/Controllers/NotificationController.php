@@ -30,7 +30,7 @@ class NotificationController extends Controller
         return $this->notifier->push_notification($data);
     }
 
-    public function push_to_user(Request $request, string $username)
+    public function pushToUser(Request $request, string $username)
     {
         $data = $request->validate([
             'title' => 'required|min:3',
@@ -49,10 +49,11 @@ class NotificationController extends Controller
 
     public function test()
     {
-        return $this->notifier->push_notification_to_administrators([
-            "title" => "New Order Submission",
-            "body" => "Client submitted new order ()",
-            "payload" => 'id',
-        ]);
+        $data = [
+            "title" => "Test notifications",
+            "body" => "This message to make sure sending notifications working properly",
+            "payload" => "",
+        ];
+        return $this->notifier->push_notification_to_administrators($data);
     }
 }

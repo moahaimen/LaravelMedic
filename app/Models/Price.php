@@ -23,4 +23,5 @@ class Price extends Model
     {
         return $this->belongsTo(Price::class, 'previous_id');
     }
+
 }

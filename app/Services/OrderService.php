@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\Requests\CreateAnonymousOrderRequest;
 use App\Http\Requests\OrderCreateForUserRequest;
 use App\Http\Requests\OrderCreateRequest;
 use App\Models\ClientInformation;
@@ -30,6 +31,30 @@ class OrderService extends Service
         $createData = [];
 
         $createData['user_id'] = $data['user_id'];
+        $createData['exchange_id'] = Exchange::query()->orderBy('changed_at', 'DESC')->first()->id;
+        if (array_key_exists('promo_code', $data) && $data['promo_code'] != null) {
+            $createData['promo_code_id'] = PromoCode::getPromoCodeId($data['promo_code']);
+        }
+        $order = Order::create($createData);
+
+        OrderStatus::make_order_status($order, OrderStatus::pending, auth()->id());
+        ClientInformation::make_from_user($order, null, $data['client']);
+
+        $order->setProducts($data['products']);
+
+        if ($order == null) {
+            throw new Exception('Created order is null');
+        }
+        $this->notifyOrderSides($order);
+
+        return $order;
+    }
+
+    public function createAnonymousOrder(CreateAnonymousOrderRequest $request): Order
+    {
+        $data = $request->all();
+        $createData = [];
+
         $createData['exchange_id'] = Exchange::query()->orderBy('changed_at', 'DESC')->first()->id;
         if (array_key_exists('promo_code', $data) && $data['promo_code'] != null) {
             $createData['promo_code_id'] = PromoCode::getPromoCodeId($data['promo_code']);

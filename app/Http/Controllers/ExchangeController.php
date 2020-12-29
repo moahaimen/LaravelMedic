@@ -65,4 +65,20 @@ class ExchangeController extends Controller
             return Response::Error($th->getMessage());
         }
     }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Exchange  $exchange
+     * @return \Illuminate\Http\Response
+     */
+    public function getCurrentExchange()
+    {
+        try {
+            $exchange = Exchange::query()->orderBy('changed_at', 'DESC')->first();
+            return Response::Ok($exchange, 'Current exchange fetched successfully');
+        } catch (\Throwable $th) {
+            return Response::Error($th->getMessage());
+        }
+    }
 }

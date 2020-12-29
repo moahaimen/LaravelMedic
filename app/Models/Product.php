@@ -19,6 +19,8 @@ class Product extends Model
         'available' => 'bool',
     ];
 
+    protected $appends = array('exchanged_price');
+
     public function price()
     {
         return $this->belongsTo(Price::class);
@@ -78,5 +80,17 @@ class Product extends Model
     public function order_products()
     {
         return $this->hasMany(OrderProduct::class, 'product_id');
+    }
+
+    public function getExchangedPriceAttribute()
+    {
+        $e = Exchange::query()->orderBy('changed_at', 'DESC')->first()->value;
+        $p = clone($this->price);
+
+        $p->value = $p->value * $e;
+        if($p->previous != null) {
+            $p->previous->value = $p->previous->value * $e;
+        }
+        return $p;
     }
 }

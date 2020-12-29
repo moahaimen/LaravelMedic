@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class OrderUpdateRequest extends FormRequest
+class CreateOrderRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,16 +24,16 @@ class OrderUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'products' => 'nullable|array|min:1',
-            'products.*.quantity' => 'nullable|numeric|min:1',
-            'products.*.product_id' => 'nullable|numeric|exists:products,id',
-            'client.name' => 'nullable|string|min:3',
-            'client.phone' => 'nullable|string',
-            'client.province' => 'nullable|string|min:3',
-            'client.address' => 'nullable|string|min:3',
+            'products' => 'required|array|min:1',
+            'products.*.quantity' => 'required|numeric|min:1',
+            'products.*.product_id' => 'required|numeric|exists:products,id',
+            'client.name' => 'required|string|min:3',
+            'client.phone' => 'required|string',
+            'client.province_id' => 'required|numeric|exists:provinces,id',
+            'client.address' => 'required|string|min:3',
             'client.notes' => 'nullable|string|min:3',
             'user_id' => 'nullable|numeric|exists:users,id',
-            'promo_code_id' => 'nullable|numeric|exists:promo_codes,id',
+            'promo_code' => 'nullable|string|exists:promo_codes,code',
         ];
     }
 }

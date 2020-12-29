@@ -104,6 +104,26 @@ class AuthController extends Controller
         return Response::Error('Something went wrong while logging the user out');
     }
 
+    public function updateUser(Request $request)
+    {
+        $user = auth()->user();
+
+        if ($user instanceof User) {
+            $data = $request->validate([
+                'first_name' => 'nullable|string|min:3',
+                'last_name' => 'nullable|string|min:3',
+                'province_id' => 'nullable|numeric|exists:provinces,id',
+                'address' => 'nullable|string',
+                'phone_number' => 'nullable|string',
+            ]);
+
+            if ($user->update($data)) {
+                return Response::Ok($user, 'User data saved successfully');
+            }
+        }
+        return Response::Error('Something went wrong while saving user data');
+    }
+
     /**
      * Get the token array structure.
      *
