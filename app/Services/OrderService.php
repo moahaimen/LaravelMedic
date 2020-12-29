@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Http\Requests\CreateAnonymousOrderRequest;
+use App\Http\Requests\CreateOrderByUserRequest;
+use App\Http\Requests\CreateOrderRequest;
 use App\Http\Requests\OrderCreateForUserRequest;
 use App\Http\Requests\OrderCreateRequest;
 use App\Models\ClientInformation;
@@ -25,7 +27,7 @@ class OrderService extends Service
         $this->notifier = $notifier;
     }
 
-    public function createOrder(OrderCreateRequest $request): Order
+    public function createOrder(CreateOrderRequest $request): Order
     {
         $data = $request->all();
         $createData = [];
@@ -74,7 +76,7 @@ class OrderService extends Service
         return $order;
     }
 
-    public function createUserOrder(User $user, OrderCreateForUserRequest $request): Order
+    public function createUserOrder(User $user, CreateOrderByUserRequest $request): Order
     {
         $data = $request->all();
         $createData = [];

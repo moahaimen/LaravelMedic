@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAnonymousOrderRequest;
+use App\Http\Requests\CreateOrderByUserRequest;
+use App\Http\Requests\CreateOrderRequest;
 use App\Http\Requests\OrderCreateForUserRequest;
 use App\Http\Requests\OrderCreateRequest;
 use App\Http\Requests\OrderUpdateRequest;
+use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Response;
 use App\Models\ClientInformation;
 use App\Models\Order;
@@ -73,7 +76,7 @@ class OrderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function create(OrderCreateRequest $request)
+    public function create(CreateOrderRequest $request)
     {
         try {
             $order = $this->order->createOrder($request);
@@ -106,7 +109,7 @@ class OrderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function createUserOrder(OrderCreateForUserRequest $request)
+    public function createUserOrder(CreateOrderByUserRequest $request)
     {
         try {
             $user = auth()->user();
@@ -130,7 +133,7 @@ class OrderController extends Controller
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function update(OrderUpdateRequest $request, Order $order)
+    public function update(UpdateOrderRequest $request, Order $order)
     {
         try {
             if ($order->status()->get()->first()->title != OrderStatus::pending) {

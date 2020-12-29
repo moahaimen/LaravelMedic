@@ -24,7 +24,10 @@ class AuthController extends Controller
             'last_name' => 'required|min:3',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:8|confirmed',
-            'role_id' => 'required|exists:roles,id'
+            'role_id' => 'required|exists:roles,id',
+            'phone_number' => 'required|string',
+            'province_id' => 'required|numeric|provinces,id',
+            'address' => 'required|string'
         ]);
         $data['password'] = bcrypt($data['password']);
         $data['status_id'] = UserStatus::make(UserStatus::active, '<onRegister>')['id'];
@@ -33,13 +36,11 @@ class AuthController extends Controller
             if ($data == null) {
                 return Response::Error("User data undefined");
             }
-
             $user = User::create($data);
 
             if ($user == null) {
                 return Response::Error("User creation failed");
             }
-
             return $this->composeResponse($user);
         } catch (\Exception $e) {
             return Response::Error($e->getMessage());
@@ -66,7 +67,6 @@ class AuthController extends Controller
             if ($user instanceof JsonResponse) {
                 return $user;
             }
-
             auth()->setUser($user);
             return $this->composeResponse($user);
         } catch (\Exception $e) {
@@ -141,9 +141,9 @@ class AuthController extends Controller
         return Response::Ok($data);
     }
 
-    private function attempt(array $credintials)
+    private function attempt(array $credentials)
     {
-        $users = User::where('email', $credintials['email'])->get();
+        $users = User::where('email', $credentials['email'])->get();
 
         if ($users == null || count($users) != 1) {
             return Response::Error("Invalid Username or Password");
