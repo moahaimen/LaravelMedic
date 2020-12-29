@@ -13,7 +13,7 @@ class CreateOrderByUserRequest extends FormRequest
      */
     public function authorize()
     {
-        return auth()->id() == null;
+        return auth()->id() != null;
     }
 
     /**
