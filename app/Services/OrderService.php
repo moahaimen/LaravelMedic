@@ -139,6 +139,10 @@ class OrderService extends Service
                 'exchange',
                 'order_products',
                 'order_products.product',
+                'order_products.product.category',
+                'order_products.product.brand',
+                'order_products.product.price',
+                'order_products.product.attachments',
                 'order_products.price',
             ])
             ->orderBy('id')
