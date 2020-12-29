@@ -108,7 +108,9 @@ class OrderService extends Service
         $orders = Order::query()
             ->with([
                 'statuses',
-                'user', 'client',
+                'user', 
+                'client',
+                'client.province',
                 'promo_code',
                 'exchange',
                 'order_products',
@@ -134,7 +136,9 @@ class OrderService extends Service
         $orders = Order::query()
             ->with([
                 'statuses',
-                'user', 'client',
+                'user', 
+                'client',
+                'client.province',
                 'promo_code',
                 'exchange',
                 'order_products',

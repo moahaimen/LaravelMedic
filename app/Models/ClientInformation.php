@@ -27,4 +27,9 @@ class ClientInformation extends Model
     {
         return $this->belongsTo(Order::class, 'id', 'role_id');
     }
+
+    public function province()
+    {
+        return $this->belongsTo(Province::class);
+    }
 }
