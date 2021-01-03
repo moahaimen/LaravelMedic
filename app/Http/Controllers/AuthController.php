@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Response;
+use App\Models\Role;
 use App\Models\User;
 use App\Models\UserFcmToken;
 use App\Models\UserStatus;
@@ -26,11 +27,42 @@ class AuthController extends Controller
             'password' => 'required|min:8|confirmed',
             'role_id' => 'required|exists:roles,id',
             'phone_number' => 'required|string',
-            'province_id' => 'required|numeric|provinces,id',
+            'province_id' => 'required|numeric|exists:provinces,id',
             'address' => 'required|string'
         ]);
         $data['password'] = bcrypt($data['password']);
         $data['status_id'] = UserStatus::make(UserStatus::active, '<onRegister>')['id'];
+
+        try {
+            if ($data == null) {
+                return Response::Error("User data undefined");
+            }
+            $user = User::create($data);
+
+            if ($user == null) {
+                return Response::Error("User creation failed");
+            }
+            return $this->composeResponse($user);
+        } catch (\Exception $e) {
+            return Response::Error($e->getMessage());
+        }
+    }
+
+    public function registerClient(Request $request)
+    {
+        $data = $request->validate([
+            'user_name' => 'required|unique:users',
+            'first_name' => 'required|min:3',
+            'last_name' => 'required|min:3',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:8|confirmed',
+            'phone_number' => 'required|string',
+            'province_id' => 'required|numeric|exists:provinces,id',
+            'address' => 'required|string'
+        ]);
+        $data['password'] = bcrypt($data['password']);
+        $data['status_id'] = UserStatus::make(UserStatus::active, '<onRegister>')['id'];
+        $data['role_id'] = Role::where('name', '=', 'client')->first()->id;
 
         try {
             if ($data == null) {
