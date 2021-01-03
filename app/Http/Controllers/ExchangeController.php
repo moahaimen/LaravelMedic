@@ -72,7 +72,7 @@ class ExchangeController extends Controller
      * @param  \App\Models\Exchange  $exchange
      * @return \Illuminate\Http\Response
      */
-    public function getCurrentExchange()
+    public function latest()
     {
         try {
             $exchange = Exchange::query()->orderBy('changed_at', 'DESC')->first();

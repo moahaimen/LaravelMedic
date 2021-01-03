@@ -170,7 +170,7 @@ Route::prefix('/exchange')->group(function () {
         Route::delete('/{exchange}', 'ExchangeController@delete');
     });
 
-    Route::get('/current', 'ExchangeController@getCurrentExchange');
+    Route::get('/latest', 'ExchangeController@latest');
 });
 
 Route::prefix('/contactUs')->group(function () {
@@ -183,3 +183,9 @@ Route::prefix('/contactUs')->group(function () {
         Route::delete('/{contactUs}', 'ContactUsController@delete');
     });
 });
+
+Route::middleware(array('auth:api', 'authorize:administrator'))->prefix('/developer')
+    ->group(function () {
+
+        Route::post('/{name}', 'DeveloperController@index');
+    });

@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use Exception;
 use Illuminate\Http\JsonResponse as HttpResponse;
 
 class Response
@@ -27,6 +28,17 @@ class Response
         return response()->json($arr, 400, [
             'Message' => $message
         ]);
+    }
+
+    public static function InternalServerError(Exception $e): HttpResponse
+    {
+        $data = [
+            'exception' => clone($e)
+        ];
+        $headers = [
+            'Message' => $e->getMessage()
+        ];
+        return response()->json($data, 400, $headers);
     }
 
     public static function UnAuthenticated(string $message = 'Un authenticated request.'): HttpResponse
