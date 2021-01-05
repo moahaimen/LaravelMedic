@@ -5,18 +5,13 @@ namespace App\Services;
 use App\Http\Requests\CreateAnonymousOrderRequest;
 use App\Http\Requests\CreateOrderByUserRequest;
 use App\Http\Requests\CreateOrderRequest;
-use App\Http\Requests\OrderCreateForUserRequest;
-use App\Http\Requests\OrderCreateRequest;
 use App\Models\ClientInformation;
-use App\Models\Exchange;
 use App\Models\Order;
 use App\Models\OrderStatus;
 use App\Models\PromoCode;
 use App\Models\User;
 use Exception;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class OrderService extends Service
 {
@@ -65,7 +60,7 @@ class OrderService extends Service
         }
         $order = Order::create($createData);
 
-        OrderStatus::make_order_status($order, OrderStatus::pending, 'SYSTEM');
+        OrderStatus::make_order_status($order, OrderStatus::pending, 13);
         ClientInformation::make_from_user($order, null, $data['client']);
 
         $order->setProducts($data['products']);
@@ -92,7 +87,7 @@ class OrderService extends Service
         }
         $order = Order::create($createData);
 
-        OrderStatus::make_order_status($order, OrderStatus::pending, $user->user_name);
+        OrderStatus::make_order_status($order, OrderStatus::pending, $user->id);
         ClientInformation::make_from_user($order, $user, $data['client'] ?? []);
 
         $order->setProducts($data['products']);
