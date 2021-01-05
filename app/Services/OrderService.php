@@ -21,10 +21,12 @@ use Illuminate\Support\Facades\DB;
 class OrderService extends Service
 {
     protected $notifier;
+    protected $exchange;
 
-    public function __construct(NotificationService $notifier)
+    public function __construct(NotificationService $notifier, ExchangeService $exchange)
     {
         $this->notifier = $notifier;
+        $this->exchange = $exchange;
     }
 
     public function createOrder(CreateOrderRequest $request): Order
@@ -33,7 +35,7 @@ class OrderService extends Service
         $createData = [];
 
         $createData['user_id'] = $data['user_id'];
-        $createData['exchange_id'] = Exchange::query()->orderBy('changed_at', 'DESC')->first()->id;
+        $createData['exchange_id'] = $this->exchange->latest()->id;
         if (array_key_exists('promo_code', $data) && $data['promo_code'] != null) {
             $createData['promo_code_id'] = PromoCode::getPromoCodeId($data['promo_code']);
         }
@@ -57,13 +59,13 @@ class OrderService extends Service
         $data = $request->all();
         $createData = [];
 
-        $createData['exchange_id'] = Exchange::query()->orderBy('changed_at', 'DESC')->first()->id;
+        $createData['exchange_id'] = $this->exchange->latest()->id;
         if (array_key_exists('promo_code', $data) && $data['promo_code'] != null) {
             $createData['promo_code_id'] = PromoCode::getPromoCodeId($data['promo_code']);
         }
         $order = Order::create($createData);
 
-        OrderStatus::make_order_status($order, OrderStatus::pending, auth()->id());
+        OrderStatus::make_order_status($order, OrderStatus::pending, 'SYSTEM');
         ClientInformation::make_from_user($order, null, $data['client']);
 
         $order->setProducts($data['products']);
@@ -83,14 +85,14 @@ class OrderService extends Service
 
 
         $createData['user_id'] = $user->id;
-        $createData['exchange_id'] = Exchange::query()->orderBy('changed_at', 'DESC')->first()->id;
+        $createData['exchange_id'] = $this->exchange->latest()->id;
 
         if (array_key_exists('promo_code', $data) && $data['promo_code'] != null) {
             $createData['promo_code_id'] = PromoCode::getPromoCodeId($data['promo_code']);
         }
         $order = Order::create($createData);
 
-        OrderStatus::make_order_status($order, OrderStatus::pending, $user->id);
+        OrderStatus::make_order_status($order, OrderStatus::pending, $user->user_name);
         ClientInformation::make_from_user($order, $user, $data['client'] ?? []);
 
         $order->setProducts($data['products']);
@@ -108,7 +110,7 @@ class OrderService extends Service
         $orders = Order::query()
             ->with([
                 'statuses',
-                'user', 
+                'user',
                 'client',
                 'client.province',
                 'promo_code',
@@ -136,7 +138,7 @@ class OrderService extends Service
         $orders = Order::query()
             ->with([
                 'statuses',
-                'user', 
+                'user',
                 'client',
                 'client.province',
                 'promo_code',
