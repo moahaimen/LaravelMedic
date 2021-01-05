@@ -114,7 +114,7 @@ Route::prefix('/products')->group(function () {
 
 Route::prefix('/orders')->group(function () {
 
-    Route::post('/', 'OrderController@createAnonymousOrder');
+    Route::post('/anonymous', 'OrderController@createAnonymousOrder');
 
     Route::middleware(array('auth:api', 'authorize:administrator'))->group(function () {
         Route::post('/', 'OrderController@create');
