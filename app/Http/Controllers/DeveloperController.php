@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Response;
 use App\Models\Price;
 use App\Models\Product;
+use App\Models\Province;
 use App\Services\ExchangeService;
 use App\Services\PriceService;
 use Exception;
@@ -55,6 +56,19 @@ class DeveloperController extends Controller
                 $next = Price::create($data);
                 $product->price_id = $next->id;
                 $product->save();
+            }
+        }
+    }
+
+    private function refreshProvincesData(): void
+    {
+        $latest = $this->exchange->latest();
+        $provinces = Province::query()->get();
+
+        foreach ($provinces as $province) {
+            if ($province instanceof Province) {
+                $province->fees = $province->fees / $latest->value;
+                $province->save();
             }
         }
     }
