@@ -31,11 +31,12 @@
       <div class="loader">Loading</div>
     </div>
   </app-root>
-  <noscript>Please enable JavaScript to continue using this application.</noscript>
-  <script src="runtime.0755664ca5c1c4171fa7.js" defer></script>
-  <script src="polyfills.bcfd6e890dbe9082dc18.js" defer></script>
-  <script src="scripts.4e84f8ae59670f438b01.js" defer></script>
-  <script src="main.f49aabc126b6df44398a.js" defer></script>
-</body>
-
+  <noscript>Please enable JavaScript to continue using this
+            application.</noscript
+        >
+        <script src="runtime.cab870f3064732f95261.js" defer></script>
+        <script src="polyfills.bcfd6e890dbe9082dc18.js" defer></script>
+        <script src="scripts.4e84f8ae59670f438b01.js" defer></script>
+        <script src="main.8531f867923da8b045fb.js" defer></script>
+    </body>
 </html>
