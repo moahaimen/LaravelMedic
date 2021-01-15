@@ -48,7 +48,7 @@ class AuthController extends Controller
         }
     }
 
-    public function registerClient(Request $request)
+    public function registerNew(Request $request)
     {
         $data = $request->validate([
             'user_name' => 'required|unique:users',
