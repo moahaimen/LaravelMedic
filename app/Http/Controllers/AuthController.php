@@ -48,37 +48,6 @@ class AuthController extends Controller
         }
     }
 
-    public function registerNew(Request $request)
-    {
-        $data = $request->validate([
-            'user_name' => 'required|unique:users',
-            'first_name' => 'required|min:3',
-            'last_name' => 'required|min:3',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:8|confirmed',
-            'phone_number' => 'required|string',
-            'province_id' => 'required|numeric|exists:provinces,id',
-            'address' => 'required|string'
-        ]);
-        $data['password'] = bcrypt($data['password']);
-        $data['status_id'] = UserStatus::make(UserStatus::active, '<onRegister>')['id'];
-        $data['role_id'] = Role::where('name', '=', 'client')->first()->id;
-
-        try {
-            if ($data == null) {
-                return Response::Error("User data undefined");
-            }
-            $user = User::create($data);
-
-            if ($user == null) {
-                return Response::Error("User creation failed");
-            }
-            return $this->composeResponse($user);
-        } catch (\Exception $e) {
-            return Response::Error($e->getMessage());
-        }
-    }
-
     /**
      * Login via given credentials.
      *
