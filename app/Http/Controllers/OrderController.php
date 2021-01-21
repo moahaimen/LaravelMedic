@@ -43,8 +43,8 @@ class OrderController extends Controller
             $orders = $this->order->getOrders($request);
             return Response::Ok($orders, 'Orders list fetched successfully');
         } catch (\Exception $e) {
-            throw $e;
-            // return Response::Error('Failed to fetch orders list');
+            // throw $e;
+            return Response::Error('Failed to fetch orders list');
         }
     }
 

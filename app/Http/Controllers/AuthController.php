@@ -2,47 +2,45 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginUserRequest;
+use App\Http\Requests\RegisterClientRequest;
+use App\Http\Requests\RegisterUserRequest;
 use App\Http\Response;
-use App\Models\Role;
-use App\Models\User;
-use App\Models\UserFcmToken;
-use App\Models\UserStatus;
-use Illuminate\Http\JsonResponse;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
+    protected $user;
+
+    public function __construct(UserService $user)
+    {
+        $this->user = $user;
+    }
+
     /**
      * Register via given credentials.
      *
      * @return \App\Http\Response
      */
-    public function register(Request $request)
+    public function register(RegisterUserRequest $request)
     {
-        $data = $request->validate([
-            'user_name' => 'required|unique:users',
-            'first_name' => 'required|min:3',
-            'last_name' => 'required|min:3',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:8|confirmed',
-            'role_id' => 'required|exists:roles,id',
-            'phone_number' => 'required|string',
-            'province_id' => 'required|numeric|exists:provinces,id',
-            'address' => 'required|string'
-        ]);
-        $data['password'] = bcrypt($data['password']);
-        $data['status_id'] = UserStatus::make(UserStatus::active, '<onRegister>')['id'];
-
         try {
-            if ($data == null) {
-                return Response::Error("User data undefined");
-            }
-            $user = User::create($data);
-
-            if ($user == null) {
-                return Response::Error("User creation failed");
-            }
-            return $this->composeResponse($user);
+            return Response::Ok($this->user->registerUser($request), 'User registered successfully');
+        } catch (\Exception $e) {
+            return Response::Error($e->getMessage());
+        }
+    }
+    
+    /**
+     * Register via given credentials.
+     *
+     * @return \App\Http\Response
+     */
+    public function registerClient(RegisterClientRequest $request)
+    {
+        try {
+            return Response::Ok($this->user->registerClient($request), 'User registered successfully');
         } catch (\Exception $e) {
             return Response::Error($e->getMessage());
         }
@@ -53,25 +51,12 @@ class AuthController extends Controller
      *
      * @return \App\Http\Response
      */
-    public function login(Request $request)
+    public function login(LoginUserRequest $request)
     {
-        $data = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|min:8',
-        ]);
-
         try {
-            $data['request'] = $request;
-
-            $user = $this->attempt($data);
-
-            if ($user instanceof JsonResponse) {
-                return $user;
-            }
-            auth()->setUser($user);
-            return $this->composeResponse($user);
+            return Response::Ok($this->user->loginUser($request), 'User logged-in successfully');
         } catch (\Exception $e) {
-            return Response::Error('Failed to login to the system');
+            return Response::Error($e->getMessage());
         }
     }
 
@@ -82,7 +67,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return Response::Ok(auth()->user());
+        return Response::Ok($this->user->details(), 'User details fetched successfully');
     }
 
     /**
@@ -92,69 +77,19 @@ class AuthController extends Controller
      */
     public function logout()
     {
-        $user = auth()->user();
-
-        if ($user instanceof User) {
-            // Delete all fcm tokens
-            UserFcmToken::where('user_id', '=', $user['id'])->delete();
-
-            // Delete access tokens
-            $user->tokens()->delete();
-            return Response::Ok(null, 'User logged out successfully');
+        try {
+            return Response::Ok($this->user->logout(), 'User logged-out successfully');
+        } catch (\Exception $e) {
+            return Response::Error($e->getMessage());
         }
-        return Response::Error('Something went wrong while logging the user out');
     }
 
-    public function updateUser(Request $request)
+    public function update(Request $request)
     {
-        $user = auth()->user();
-
-        if ($user instanceof User) {
-            $data = $request->validate([
-                'first_name' => 'nullable|string|min:3',
-                'last_name' => 'nullable|string|min:3',
-                'province_id' => 'nullable|numeric|exists:provinces,id',
-                'address' => 'nullable|string',
-                'phone_number' => 'nullable|string',
-            ]);
-
-            if ($user->update($data)) {
-                return Response::Ok($user, 'User data saved successfully');
-            }
+        try {
+            return Response::Ok($this->user->update(auth()->user(), $request), 'User data updated successfully');
+        } catch (\Exception $e) {
+            return Response::Error($e->getMessage());
         }
-        return Response::Error('Something went wrong while saving user data');
-    }
-
-    /**
-     * Get the token array structure.
-     *
-     * @param  \App\Models\User $user
-     *
-     * @return \App\Http\Response
-     */
-    private function composeResponse(User $user)
-    {
-        $data = [
-            'user' => $user,
-            'token' => $user->createToken('MyApp')->accessToken
-        ];
-
-        return Response::Ok($data);
-    }
-
-    private function attempt(array $credentials)
-    {
-        $users = User::where('email', $credentials['email'])->get();
-
-        if ($users == null || count($users) != 1) {
-            return Response::Error("Invalid Username or Password");
-        }
-
-        $user = $users[0];
-        $status = UserStatus::find($user['status_id']);
-        if ($status == null || $status['title'] == UserStatus::blocked) {
-            return Response::Error("This account is blocked at the moment, Please contact your admin");
-        }
-        return $user;
     }
 }

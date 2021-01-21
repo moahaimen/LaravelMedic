@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('/auth')->group(function () {
 
+    Route::get('/register/client', 'AuthController@registerClient');
     Route::post('/register', 'AuthController@register');
     Route::post('/login', 'AuthController@login');
     Route::post('/resetPassword', 'AuthController@resetPassword');
