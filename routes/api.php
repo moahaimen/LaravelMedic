@@ -185,8 +185,17 @@ Route::prefix('/contactUs')->group(function () {
     });
 });
 
-Route::middleware(array('auth:api', 'authorize:administrator'))->prefix('/developer')
+Route::middleware(array('auth:api', 'authorize:administrator'))
+    ->prefix('/developer')
     ->group(function () {
 
         Route::post('/{name}', 'DeveloperController@index');
     });
+
+Route::prefix('/version')->group(function () {
+    Route::middleware(array('auth:api', 'authorize:administrator'))->group(function () {
+        Route::get('/', 'VersionController@get');
+        Route::post('/', 'VersionController@create');
+    });
+    Route::get('/latest', 'VersionController@latest');
+});
