@@ -8,14 +8,13 @@ use Illuminate\Http\Request;
 
 class VersionController extends Controller
 {
-    public function get()
+    public function get(Request $request)
     {
-        try {
-            $versions = Version::query()->get();
-            return Response::Ok($versions, 'Versions fetched successfully');
-        } catch (\Throwable $th) {
-            return Response::Error($th->getMessage());
-        }
+        $versions = Version::query();
+
+        $versions = $this->filter($versions, $request, Version::filterable);
+        $versions = $versions->paginate();
+        return Response::Ok($versions, 'Versions fetched successfully');
     }
 
 
