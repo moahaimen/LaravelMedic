@@ -37,7 +37,7 @@ class VersionController extends Controller
     {
         try {
             return Response::Ok(
-                Version::query()->orderBy('changed_at', 'DESC')->first(),
+                Version::query()->orderBy('updated_at', 'DESC')->first(),
                 'Version created successfully'
             );
         } catch (\Throwable $th) {
