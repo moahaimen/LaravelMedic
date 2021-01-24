@@ -59,7 +59,7 @@ class UserService extends Service
         }
     }
 
-    public function loginUser(LoginUserRequest $request): User
+    public function loginUser(LoginUserRequest $request): array
     {
         $data = $request->all();
         try {
