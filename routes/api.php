@@ -24,7 +24,7 @@ Route::prefix('/auth')->group(function () {
         ->prefix('/me')
         ->group(function () {
             Route::get('/', 'AuthController@me');
-            Route::put('/', 'AuthController@updateUser');
+            Route::put('/', 'AuthController@update');
 
             Route::post('/logout', 'AuthController@logout');
 
