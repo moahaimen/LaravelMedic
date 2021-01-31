@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterClientRequest;
 use App\Http\Requests\RegisterUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Response;
 use App\Services\UserService;
-use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -84,7 +84,7 @@ class AuthController extends Controller
         }
     }
 
-    public function update(Request $request)
+    public function update(UpdateUserRequest $request)
     {
         try {
             return Response::Ok($this->user->update(auth()->user(), $request), 'User data updated successfully');
