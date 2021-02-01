@@ -105,17 +105,21 @@ class Order extends Model
     {
         $this->products()->detach();
 
-        $productsIds = array_column($elements, 'product_id');
-        $products = Product::query()->whereIn('id', $productsIds)->get();
+        $products = Product::query()->whereIn('id', array_column($elements, 'product_id'))->get();
 
         foreach ($elements as $i => $e) {
-            $e['product'] = $products[$i];
             $product_id = $e['product_id'];
-            $data = [
-                'quantity' => $e['quantity'],
-                'price_id' => $e['product']['price_id'],
-            ];
-            $this->products()->attach($product_id, $data);
+
+            foreach ($products as $product) {
+                if($product->id == $product_id) {
+                    $e['product'] = $product;
+                    $data = [
+                        'quantity' => $e['quantity'],
+                        'price_id' => $e['product']['price_id'],
+                    ];
+                    $this->products()->attach($product_id, $data);
+                }
+            }
         }
     }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <meta charset="utf-8" />
@@ -31,6 +31,6 @@
     </div>
   </app-root>
   <noscript>Please enable JavaScript to continue using this application.</noscript>
-<script src="runtime.dbc3e28f444bac048edf.js" defer></script><script src="polyfills.bcfd6e890dbe9082dc18.js" defer></script><script src="scripts.4e84f8ae59670f438b01.js" defer></script><script src="main.0f27440b3088690e0a21.js" defer></script></body>
+<script src="runtime.f8c6adb7dd649afe06ee.js" defer></script><script src="polyfills.bcfd6e890dbe9082dc18.js" defer></script><script src="scripts.4e84f8ae59670f438b01.js" defer></script><script src="main.0f27440b3088690e0a21.js" defer></script></body>
 
 </html>
