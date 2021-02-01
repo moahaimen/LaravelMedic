@@ -107,7 +107,7 @@ class Order extends Model
 
         $products = Product::query()->whereIn('id', array_column($elements, 'product_id'))->get();
 
-        foreach ($elements as $i => $e) {
+        foreach ($elements as $e) {
             $product_id = $e['product_id'];
 
             foreach ($products as $product) {
