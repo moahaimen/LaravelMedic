@@ -124,12 +124,12 @@ class OrderService extends Service
             ])
             ->orderBy('id');
 
-        $status = $request->input(str_replace('.', '_', 'status.title'));
-        if ($status != null) {
-            $orders = $orders->whereHas('statuses', function ($q) use ($status) {
-                return $q->where('title', '=', $status);
-            });
-        }
+        // $status = $request->input(str_replace('.', '_', 'status.title'));
+        // if ($status != null) {
+        //     $orders = $orders->whereHas('statuses', function ($q) use ($status) {
+        //         return $q->where('title', '=', $status);
+        //     });
+        // }
         $orders = $this->filter($orders, $request, Order::filterable);
         $orders = $orders->paginate(15);
 
