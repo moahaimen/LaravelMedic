@@ -51,26 +51,30 @@ class OrderService extends Service
 
     public function createAnonymousOrder(CreateAnonymousOrderRequest $request): Order
     {
-        $data = $request->all();
-        $createData = [];
+        try {
+            $data = $request->all();
+            $createData = [];
 
-        $createData['exchange_id'] = $this->exchange->latest()->id;
-        if (array_key_exists('promo_code', $data) && $data['promo_code'] != null) {
-            $createData['promo_code_id'] = PromoCode::getPromoCodeId($data['promo_code']);
+            $createData['exchange_id'] = $this->exchange->latest()->id;
+            if (array_key_exists('promo_code', $data) && $data['promo_code'] != null) {
+                $createData['promo_code_id'] = PromoCode::getPromoCodeId($data['promo_code']);
+            }
+            $order = Order::create($createData);
+
+            OrderStatus::make_order_status($order, OrderStatus::pending, 13);
+            ClientInformation::make_from_user($order, null, $data['client']);
+
+            $order->setProducts($data['products']);
+
+            if ($order == null) {
+                throw new Exception('Created order is null');
+            }
+            $this->notifyOrderSides($order);
+
+            return $order;
+        } catch (\Throwable $th) {
+            throw $th;
         }
-        $order = Order::create($createData);
-
-        OrderStatus::make_order_status($order, OrderStatus::pending, 13);
-        ClientInformation::make_from_user($order, null, $data['client']);
-
-        $order->setProducts($data['products']);
-
-        if ($order == null) {
-            throw new Exception('Created order is null');
-        }
-        $this->notifyOrderSides($order);
-
-        return $order;
     }
 
     public function createUserOrder(User $user, CreateOrderByUserRequest $request): Order
