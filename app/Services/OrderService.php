@@ -121,8 +121,7 @@ class OrderService extends Service
                 'order_products.product.price',
                 'order_products.product.attachments',
                 'order_products.price',
-            ])
-            ->orderBy('id');
+            ]);
 
         // $status = $request->input(str_replace('.', '_', 'status.title'));
         // if ($status != null) {

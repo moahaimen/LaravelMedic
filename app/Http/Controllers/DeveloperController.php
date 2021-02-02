@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Response;
+use App\Models\Order;
 use App\Models\Price;
 use App\Models\Product;
 use App\Models\Province;
@@ -71,5 +72,10 @@ class DeveloperController extends Controller
                 $province->save();
             }
         }
+    }
+    
+    private function getOrders()
+    {
+        return Order::all();
     }
 }
