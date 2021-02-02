@@ -109,7 +109,7 @@ class OrderService extends Service
         $orders = Order::query()
             ->with([
                 'statuses',
-                // 'user',
+                'user',
                 'client',
                 'client.province',
                 'promo_code',
@@ -123,14 +123,14 @@ class OrderService extends Service
                 'order_products.price',
             ]);
 
-        // $status = $request->input(str_replace('.', '_', 'status.title'));
-        // if ($status != null) {
-        //     $orders = $orders->whereHas('statuses', function ($q) use ($status) {
-        //         return $q->where('title', '=', $status);
-        //     });
-        // }
+        $status = $request->input(str_replace('.', '_', 'status.title'));
+        if ($status != null) {
+            $orders = $orders->whereHas('statuses', function ($q) use ($status) {
+                return $q->where('title', '=', $status);
+            });
+        }
         $orders = $this->filter($orders, $request, Order::filterable);
-        $orders = $orders->paginate(15);
+        $orders = $orders->paginate();
 
         return $orders;
     }
