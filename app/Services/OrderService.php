@@ -109,7 +109,7 @@ class OrderService extends Service
         $orders = Order::query()
             ->with([
                 'statuses',
-                'user',
+                // 'user',
                 'client',
                 'client.province',
                 'promo_code',
