@@ -156,13 +156,15 @@ Route::middleware(array('auth:api', 'authorize:administrator'))
 Route::prefix('/provinces')->group(function () {
 
     Route::get('/', 'ProvinceController@get');
-
+    
     Route::middleware(array('auth:api', 'authorize:administrator'))->group(function () {
         Route::post('/', 'ProvinceController@create');
         Route::put('/{province}', 'ProvinceController@update');
         Route::delete('/{province}', 'ProvinceController@delete');
     });
 });
+
+Route::get('/prvncs', 'ProvinceController@get');
 
 Route::prefix('/exchange')->group(function () {
     Route::middleware(array('auth:api', 'authorize:administrator'))->group(function () {
