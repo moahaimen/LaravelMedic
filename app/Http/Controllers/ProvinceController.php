@@ -25,6 +25,20 @@ class ProvinceController extends Controller
     }
 
     /**
+     * Fetch a list of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getProvinces(Request $request)
+    {
+        $provinces = Province::query();
+
+        $provinces = $this->filter($provinces, $request, Province::filterable);
+        $provinces = $provinces->paginate($provinces->count());
+        return Response::Ok($provinces, 'Provinces list fetched successfully');
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

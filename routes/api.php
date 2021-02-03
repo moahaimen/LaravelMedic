@@ -164,7 +164,7 @@ Route::prefix('/provinces')->group(function () {
     });
 });
 
-Route::get('/prvncs', 'ProvinceController@get');
+Route::get('/prvncs', 'ProvinceController@getProvinces');
 
 Route::prefix('/exchange')->group(function () {
     Route::middleware(array('auth:api', 'authorize:administrator'))->group(function () {
