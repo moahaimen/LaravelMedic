@@ -13,7 +13,7 @@
     }
 }
 
-html *:not(i.nc-icon|span.nc-icon|i.fa|span.fa) {
+html *:not(i.nc-icon, span.nc-icon, i.fa, span.fa) {
     font-family: 'Museo Sans For Dell' !important;
 }
 
