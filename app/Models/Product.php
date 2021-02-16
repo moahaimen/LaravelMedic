@@ -8,7 +8,8 @@ class Product extends Model
 {
     public const filterable = [
         'category_id', 'brand_id',
-        'en_name', 'en_description', 'ar_name', 'ar_description', 'brand.en_name', 'category.en_name', 'is_main', 'price.value', 'available'
+        'en_name', 'en_description', 'ar_name', 'ar_description', 'brand.en_name', 'category.en_name', 
+        'is_main', 'price.value', 'available'
     ];
 
     protected $fillable = [
