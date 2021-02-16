@@ -118,7 +118,7 @@ class OrderService extends Service
                 'order_products.product',
                 'order_products.product.category',
                 'order_products.product.brand',
-                'order_products.product.',
+                'order_products.product.price',
                 'order_products.product.attachments',
                 'order_products.price',
             ])
