@@ -24,7 +24,7 @@ class PriceService extends Service
         return Price::create($data);
     }
 
-    public function changeProductPrice(Product $product, int $value, bool $discount): Price
+    public function changeProductPrice(Product $product, float $value, bool $discount): Price
     {
         $price = $product->price()->get()->first();
         if ($price instanceof Price) {

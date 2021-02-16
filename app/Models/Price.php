@@ -14,7 +14,7 @@ class Price extends Model
     ];
 
     protected $casts = [
-        'value' => 'double',
+        'value' => 'float',
         'is_discount' => 'boolean',
     ];
 
