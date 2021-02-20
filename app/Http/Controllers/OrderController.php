@@ -136,7 +136,7 @@ class OrderController extends Controller
     public function update(UpdateOrderRequest $request, Order $order)
     {
         try {
-            if ($order->status()->get()->first()->title != OrderStatus::pending) {
+            if ($order->statuses()->get()->first()->title != OrderStatus::pending) {
                 throw new Exception('You cannot update the order after it is accepted');
             }
             $this->order->updateOrder($order, $request->all());
@@ -157,7 +157,7 @@ class OrderController extends Controller
     public function updateStatus(Request $request, Order $order)
     {
         try {
-            $status = $order->status()->title;
+            $status = $order->statuses()->title;
             if ($status == OrderStatus::canceled || $status == OrderStatus::rejected) {
                 return Response::Error('Order status cannot be changed since it is canceled or rejected');
             }
