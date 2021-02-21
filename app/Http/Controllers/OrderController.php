@@ -157,7 +157,7 @@ class OrderController extends Controller
     public function updateStatus(Request $request, Order $order)
     {
         try {
-            $status = $order->statuses()->title;
+            $status = $order->statuses()->first()->title;
             if ($status == OrderStatus::canceled || $status == OrderStatus::rejected) {
                 return Response::Error('Order status cannot be changed since it is canceled or rejected');
             }
